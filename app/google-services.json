@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "248794764712",
+    "firebase_url": "https://unilol-e3a9e.firebaseio.com",
+    "project_id": "unilol-e3a9e",
+    "storage_bucket": "unilol-e3a9e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248794764712:android:531f1b5d10718069",
+        "android_client_info": {
+          "package_name": "com.unilol.comp4521.unilol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "248794764712-14alvmiscs8s3fudjjg96mv623dsvifd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.unilol.comp4521.unilol",
+            "certificate_hash": "619980d79da66832b11cb94327a06845c782b9e0"
+          }
+        },
+        {
+          "client_id": "248794764712-b6q67vvaib109vf1a80gjmpub99jpjdd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdt4rp2gHln93y_0OSDCRaLETIYsjK1X8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "248794764712-b6q67vvaib109vf1a80gjmpub99jpjdd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
