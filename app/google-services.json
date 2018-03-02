@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "248794764712-qvd9i04d19c0bbrc4r8mjb4ui6ern9s7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.unilol.comp4521.unilol",
+            "certificate_hash": "d244c62f0c81d9aae13c79bdc158a2092096d9c9"
+          }
+        },
+        {
           "client_id": "248794764712-14alvmiscs8s3fudjjg96mv623dsvifd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
