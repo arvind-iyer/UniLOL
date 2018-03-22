@@ -44,7 +44,8 @@ class RegisterActivity : AppCompatActivity(){
                             // Sign in success, update UI with the signed-in user's information
                             val user = mAuth.currentUser.toString()
                             Toast.makeText(this, "Successfully signed up, welcome $user!!", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this, MainActivity::class.java).putExtra("username", user))
+                            startActivity(Intent(this, LoginActivity::class.java))
+                            // startActivity(Intent(this, MainActivity::class.java).putExtra("username", user))
                         } else {
                             // If sign in fails, display a message to the user.
                             val e = task.exception as FirebaseAuthException

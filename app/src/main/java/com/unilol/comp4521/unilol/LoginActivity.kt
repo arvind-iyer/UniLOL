@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity(){
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
             // Signout for demo purpose
-            mAuth.signOut()
+            current_user.text = "Current user: ${currentUser.email}"
             Toast.makeText(this, "Successfully Logged in using Facebook, welcome ${currentUser.toString()}!!", Toast.LENGTH_LONG).show()
         }
     }
@@ -68,9 +68,14 @@ class LoginActivity : AppCompatActivity(){
             view -> loginEmailPassword()
         })
 
+        login_btn_forgot_password.setOnClickListener(View.OnClickListener {
+            view -> forgotPassword()
+        })
+
         login_btn_register.setOnClickListener(View.OnClickListener {
             view -> registerEmailPassword()
         })
+
 
     }
 
@@ -91,7 +96,8 @@ class LoginActivity : AppCompatActivity(){
                 if (task.isSuccessful) {
                     val user = mAuth.currentUser.toString()
                     Toast.makeText(this, "Successfully Logged in, welcome $user!!", Toast.LENGTH_LONG).show()
-                    startActivity(Intent(this, MainActivity::class.java).putExtra("username", user))
+                    current_user.text = "Current user: ${mAuth.currentUser!!.email}"
+                    // startActivity(Intent(this, MainActivity::class.java).putExtra("username", user))
                 } else {
                     val e = task.exception as FirebaseAuthException
                     Toast.makeText(this, "Failed Login: "
@@ -108,6 +114,10 @@ class LoginActivity : AppCompatActivity(){
         startActivity(Intent(this, RegisterActivity::class.java))
     }
 
+    private fun forgotPassword (){
+        startActivity(Intent(this, ForgotPasswordActivity::class.java))
+    }
+
     private fun handleFacebookAccessToken(token: AccessToken) {
         Log.d(TAG, "handleFacebookAccessToken:" + token)
         val credential = FacebookAuthProvider.getCredential(token.token)
@@ -120,7 +130,8 @@ class LoginActivity : AppCompatActivity(){
                         val currentUserEmail = mAuth.currentUser?.email
                         Toast.makeText(this@LoginActivity, "Succesfully logged in using Facebook, Welcome ${currentUserEmail.toString()} !",
                                 Toast.LENGTH_LONG).show()
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        current_user.text = "Current user: $currentUserEmail"
+                        // startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException())
