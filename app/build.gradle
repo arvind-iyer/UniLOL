@@ -8,7 +8,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.unilol.comp4521.unilol"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -35,6 +35,7 @@ dependencies {
     compile 'com.google.firebase:firebase-core:12.0.0'
     compile 'com.google.firebase:firebase-database:12.0.0'
     implementation 'com.facebook.android:facebook-android-sdk:4.31.0'
+    implementation 'com.android.support:design:26.1.0'
 }
 
 

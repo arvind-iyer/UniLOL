@@ -1,10 +1,11 @@
 package com.unilol.comp4521.unilol
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.text.TextUtils
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.android.synthetic.main.activity_forgot_password.*
 
 /**
@@ -20,18 +21,22 @@ class ForgotPasswordActivity: AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        forgot_password_btn_submit.setOnClickListener {
-            val email = forgot_password_email.text.toString().trim()
+        link_login.setOnClickListener{
+            startActivity(Intent(this, LoginActivity::class.java))
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+        }
 
-            if (TextUtils.isEmpty(email)) {
-                Toast.makeText(applicationContext, "Enter your email!", Toast.LENGTH_SHORT).show()
-            } else {
+        btn_submit.setOnClickListener {
+            val email = input_email.text.toString()
+
+            if (validate()) {
                 mAuth!!.sendPasswordResetEmail(email)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                Toast.makeText(this@ForgotPasswordActivity, "Check email to reset your password!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@ForgotPasswordActivity, "Success, check your email!", Toast.LENGTH_SHORT).show()
                             } else {
-                                Toast.makeText(this@ForgotPasswordActivity, "Fail to send reset password email!", Toast.LENGTH_SHORT).show()
+                                val e = task.exception as FirebaseAuthException
+                                Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
                             }
                         }
             }
@@ -39,4 +44,15 @@ class ForgotPasswordActivity: AppCompatActivity() {
 
     }
 
+    private fun validate(): Boolean {
+        var valid = true
+        val email = input_email.text.toString()
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            input_email.setError("enter a valid email address")
+            valid = false
+        } else {
+            input_email.setError(null)
+        }
+        return valid;
+    }
 }

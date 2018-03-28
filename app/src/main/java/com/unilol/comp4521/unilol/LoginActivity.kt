@@ -35,9 +35,8 @@ class LoginActivity : AppCompatActivity(){
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
-            // Signout for demo purpose
-            current_user.text = "Current user: ${currentUser.email}"
-            Toast.makeText(this, "Successfully Logged in using Facebook, welcome ${currentUser.toString()}!!", Toast.LENGTH_LONG).show()
+            // Signout for demo purpose, for now every user must pass the LoginActivity
+            mAuth.signOut()
         }
     }
 
@@ -64,16 +63,19 @@ class LoginActivity : AppCompatActivity(){
             }
         })
 
-        login_btn_login.setOnClickListener(View.OnClickListener {
+        btn_login.setOnClickListener(View.OnClickListener {
             view -> loginEmailPassword()
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
         })
 
-        login_btn_forgot_password.setOnClickListener(View.OnClickListener {
-            view -> forgotPassword()
+        link_forgot_password.setOnClickListener(View.OnClickListener {
+            startActivity(Intent(this, ForgotPasswordActivity::class.java))
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
         })
 
-        login_btn_register.setOnClickListener(View.OnClickListener {
-            view -> registerEmailPassword()
+        link_signup.setOnClickListener(View.OnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
         })
 
 
@@ -94,28 +96,19 @@ class LoginActivity : AppCompatActivity(){
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener ( this, {task ->
                 if (task.isSuccessful) {
-                    val user = mAuth.currentUser.toString()
-                    Toast.makeText(this, "Successfully Logged in, welcome $user!!", Toast.LENGTH_LONG).show()
-                    current_user.text = "Current user: ${mAuth.currentUser!!.email}"
-                    // startActivity(Intent(this, MainActivity::class.java).putExtra("username", user))
+                    val user = mAuth.currentUser
+                    Toast.makeText(this, "Successfully Logged in, welcome ${user!!.email}!", Toast.LENGTH_LONG).show()
+                    startActivity(Intent(this, MainActivity::class.java).putExtra("username", user))
+                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                 } else {
                     val e = task.exception as FirebaseAuthException
-                    Toast.makeText(this, "Failed Login: "
-                            + e.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
                 }
             })
 
         }else {
             Toast.makeText(this, "Please fill up the Credentials :|", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun registerEmailPassword () {
-        startActivity(Intent(this, RegisterActivity::class.java))
-    }
-
-    private fun forgotPassword (){
-        startActivity(Intent(this, ForgotPasswordActivity::class.java))
     }
 
     private fun handleFacebookAccessToken(token: AccessToken) {
@@ -130,8 +123,8 @@ class LoginActivity : AppCompatActivity(){
                         val currentUserEmail = mAuth.currentUser?.email
                         Toast.makeText(this@LoginActivity, "Succesfully logged in using Facebook, Welcome ${currentUserEmail.toString()} !",
                                 Toast.LENGTH_LONG).show()
-                        current_user.text = "Current user: $currentUserEmail"
-                        // startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException())
