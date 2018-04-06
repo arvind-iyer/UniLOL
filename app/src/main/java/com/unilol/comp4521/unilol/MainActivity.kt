@@ -29,6 +29,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        post_new_meme.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, MakeMemeActivity::class.java)
+            startActivityForResult(intent, Activity.RESULT_CANCELED)
+        })
     }
 
     fun uploadMeme(view: View) {
