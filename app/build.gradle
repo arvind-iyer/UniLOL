@@ -39,17 +39,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-<<<<<<< HEAD
-    compile 'com.google.firebase:firebase-core:12.0.0'
-    compile 'com.google.firebase:firebase-database:12.0.0'
-    compile 'ly.img.android:photo-editor-sdk:5.0.17'
-=======
     compile 'com.google.firebase:firebase-core:15.0.0'
     compile 'com.google.firebase:firebase-database:15.0.0'
     compile 'com.google.firebase:firebase-firestore:15.0.0'
->>>>>>> dc96655e27996bafcd8bb4a9451e173a15242c20
     implementation 'com.facebook.android:facebook-android-sdk:4.31.0'
-    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:design:27.0.2'
+    compile 'ly.img.android:photo-editor-sdk:5.0.22'
+    annotationProcessor 'ly.img.android:build-processor:5.0.22'
 }
 
 
