@@ -15,6 +15,7 @@ import com.facebook.FacebookCallback
 import com.facebook.CallbackManager
 import com.facebook.AccessToken
 import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 /**
@@ -117,19 +118,29 @@ class LoginActivity : AppCompatActivity(){
         Log.d(TAG, "handleFacebookAccessToken:" + token)
         val credential = FacebookAuthProvider.getCredential(token.token)
         mAuth = FirebaseAuth.getInstance()
+        val firestore = FirebaseFirestore.getInstance()
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential:success")
-                        val currentUserEmail = mAuth.currentUser?.email
-                        Toast.makeText(this@LoginActivity, "Succesfully logged in using Facebook, Welcome ${currentUserEmail.toString()} !",
+                        Log.d(TAG, "signin with facebook success!")
+                        val currentUser = mAuth.currentUser
+                        val displayName = currentUser!!.displayName
+                        val fullName = displayName
+                        val userObj = HashMap<String, String>()
+                        userObj.put("fullName", fullName!!)
+
+                        firestore.collection("users")
+                                .document(mAuth.currentUser?.uid!!)
+                                .set(userObj as Map<String, String>)
+
+                        Toast.makeText(this@LoginActivity, "Succesfully logged in using Facebook, Welcome ${displayName} !",
                                 Toast.LENGTH_LONG).show()
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.getException())
+                        Log.w(TAG, "sign in with facebook failure", task.getException())
                         Toast.makeText(this@LoginActivity, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show()
                     }
