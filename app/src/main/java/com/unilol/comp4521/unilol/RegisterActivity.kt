@@ -11,6 +11,9 @@ import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_register.*
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.auth.UserProfileChangeRequest
+
+
 
 
 /**
@@ -39,24 +42,34 @@ class RegisterActivity : AppCompatActivity(){
     private fun registerUser () {
         val email = input_email.text.toString()
         val password = input_password.text.toString()
+        val fullName = input_full_name.text.toString()
+        val username = input_username.text.toString()
+
         if (validate()) {
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             // Sign in success, update UI with the signed-in user's information
-                            val user = mAuth.currentUser.toString()
                             val firestore = FirebaseFirestore.getInstance()
                             val userObj = HashMap<String, String>()
-                            //@TODO : Update this part to use actual name
-                            userObj.put("firstName", "Anonymous")
-                            userObj.put("lastName", "User")
+                            userObj.put("firstName", fullName)
                             firestore.collection("users")
                                     .document(mAuth.currentUser?.uid!!)
                                     .set(userObj as Map<String, String>)
-                            Toast.makeText(this, "Successfully signed up, you can login now", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this, LoginActivity::class.java))
+
+                            val user = mAuth.currentUser
+
+                            val profileUpdates = UserProfileChangeRequest.Builder()
+                                    .setDisplayName(username).build()
+
+                            user!!.updateProfile(profileUpdates)
+
+                            Toast.makeText(this, "Successfully signed up, welcome $username !", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this, MainActivity::class.java))
                             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
-                        } else {
+                        }
+
+                        else {
                             // If sign in fails, display a message to the user.
                             val e = task.exception as FirebaseAuthException
                             Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
@@ -70,10 +83,11 @@ class RegisterActivity : AppCompatActivity(){
 
     private fun validate(): Boolean {
         var valid = true
-
         val email = input_email.text.toString()
         val password = input_password.text.toString()
         val confirmPassword = input_confirmPassword.text.toString()
+        val fullName = input_full_name.text.toString()
+        val username = input_username.text.toString()
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             input_email.setError("enter a valid email address")
@@ -94,6 +108,20 @@ class RegisterActivity : AppCompatActivity(){
             valid = false
         } else {
             input_confirmPassword.setError(null)
+        }
+
+        if (fullName.isEmpty()){
+            input_full_name.setError("Please enter your full name")
+            valid = false
+        } else {
+            input_full_name.setError(null)
+        }
+
+        if (username.isEmpty() || username.length < 2){
+            input_username.setError("Username must be at least 3 characters long!")
+            valid = false
+        } else {
+            input_username.setError(null)
         }
 
         return valid;

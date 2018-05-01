@@ -15,6 +15,7 @@ import com.facebook.FacebookCallback
 import com.facebook.CallbackManager
 import com.facebook.AccessToken
 import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 /**
@@ -35,8 +36,10 @@ class LoginActivity : AppCompatActivity(){
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
-            // Signout for demo purpose, for now every user must pass the LoginActivity
-            mAuth.signOut()
+            Toast.makeText(this, "Successfully signed up, welcome " +
+                    "${currentUser.displayName} !", Toast.LENGTH_SHORT).show()
+            // Don't directly switch to mainActivity for demo purpose
+//            startActivity(Intent(this, MainActivity::class.java).putExtra("currentUser", currentUser))
         }
     }
 
@@ -98,7 +101,7 @@ class LoginActivity : AppCompatActivity(){
                 if (task.isSuccessful) {
                     val user = mAuth.currentUser
                     Toast.makeText(this, "Successfully Logged in, welcome ${user!!.email}!", Toast.LENGTH_LONG).show()
-                    startActivity(Intent(this, MainActivity::class.java).putExtra("username", user))
+                    startActivity(Intent(this, MainActivity::class.java).putExtra("currentUser", user))
                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                 } else {
                     val e = task.exception as FirebaseAuthException
@@ -107,7 +110,7 @@ class LoginActivity : AppCompatActivity(){
             })
 
         }else {
-            Toast.makeText(this, "Please fill up the Credentials :|", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please fill up the credentials!", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -115,19 +118,29 @@ class LoginActivity : AppCompatActivity(){
         Log.d(TAG, "handleFacebookAccessToken:" + token)
         val credential = FacebookAuthProvider.getCredential(token.token)
         mAuth = FirebaseAuth.getInstance()
+        val firestore = FirebaseFirestore.getInstance()
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential:success")
-                        val currentUserEmail = mAuth.currentUser?.email
-                        Toast.makeText(this@LoginActivity, "Succesfully logged in using Facebook, Welcome ${currentUserEmail.toString()} !",
+                        Log.d(TAG, "signin with facebook success!")
+                        val currentUser = mAuth.currentUser
+                        val displayName = currentUser!!.displayName
+                        val fullName = displayName
+                        val userObj = HashMap<String, String>()
+                        userObj.put("firstName", fullName!!)
+
+                        firestore.collection("users")
+                                .document(mAuth.currentUser?.uid!!)
+                                .set(userObj as Map<String, String>)
+
+                        Toast.makeText(this@LoginActivity, "Succesfully logged in using Facebook, Welcome ${displayName} !",
                                 Toast.LENGTH_LONG).show()
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.getException())
+                        Log.w(TAG, "sign in with facebook failure", task.getException())
                         Toast.makeText(this@LoginActivity, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show()
                     }
