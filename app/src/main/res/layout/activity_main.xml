@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context="com.unilol.comp4521.unilol.MainActivity">
 
+    <RelativeLayout
+        android:id="@+id/post_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/memes_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
+
+    </RelativeLayout>
 
     <ImageButton
         android:id="@+id/image_holder"
@@ -13,7 +27,7 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/common_google_signin_btn_icon_dark"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_list"
         android:maxHeight="120dp"
         android:onClick="downloadMeme"/>
     <Button
@@ -48,5 +62,6 @@
         app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:srcCompat="@drawable/ic_add"
+        android:tint="@color/white"/>
 </android.support.constraint.ConstraintLayout>
