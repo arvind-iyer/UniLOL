@@ -7,6 +7,6 @@ class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        PESDK.init(this, "android_license_unilol")
+        PESDK.init(this, "android_license")
     }
 }

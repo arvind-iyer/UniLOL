@@ -17,6 +17,7 @@
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.Dark">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,7 +53,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainApplication" />
-        <activity android:name=".MakeMemeActivity"></activity>
+        <activity android:name=".MakeMemeActivity">
+        </activity>
     </application>
 
 </manifest>
