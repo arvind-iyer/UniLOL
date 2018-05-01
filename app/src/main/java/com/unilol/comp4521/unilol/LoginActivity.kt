@@ -37,8 +37,7 @@ class LoginActivity : AppCompatActivity(){
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
             // Signout for demo purpose, for now every user must pass the LoginActivity
-//            mAuth.signOut()
-            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+            mAuth.signOut()
         }
 
     }
