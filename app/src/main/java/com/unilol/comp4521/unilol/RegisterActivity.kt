@@ -52,7 +52,7 @@ class RegisterActivity : AppCompatActivity(){
                             // Sign in success, update UI with the signed-in user's information
                             val firestore = FirebaseFirestore.getInstance()
                             val userObj = HashMap<String, String>()
-                            userObj.put("firstName", fullName)
+                            userObj.put("fullName", fullName)
                             firestore.collection("users")
                                     .document(mAuth.currentUser?.uid!!)
                                     .set(userObj as Map<String, String>)

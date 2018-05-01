@@ -128,7 +128,7 @@ class LoginActivity : AppCompatActivity(){
                         val displayName = currentUser!!.displayName
                         val fullName = displayName
                         val userObj = HashMap<String, String>()
-                        userObj.put("firstName", fullName!!)
+                        userObj.put("fullName", fullName!!)
 
                         firestore.collection("users")
                                 .document(mAuth.currentUser?.uid!!)
