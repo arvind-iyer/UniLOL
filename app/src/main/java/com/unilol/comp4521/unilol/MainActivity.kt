@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Base64
 import android.view.View
+import android.widget.Toast
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.storage.FileDownloadTask
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewManager : RecyclerView.LayoutManager
     private val mDB = FirebaseFirestore.getInstance()
     private val posts = ArrayList<Post>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -49,12 +51,14 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         viewManager = LinearLayoutManager(this)
-                        viewAdapter = PostAdapter(posts)
+                        viewAdapter = PostAdapter(posts, { post : Post -> postItemClicked(post) })
                         recyclerView = memes_recycler.apply {
                             setHasFixedSize(true)
                             layoutManager = viewManager
                             adapter = viewAdapter
                         }
+
+
                     }
             })
 
@@ -117,5 +121,9 @@ class MainActivity : AppCompatActivity() {
             // Handle failed download
             // ...
         })
+    }
+
+    private fun postItemClicked(post : Post) {
+        Toast.makeText(this, "Clicked: ${post.title}", Toast.LENGTH_LONG).show()
     }
 }
