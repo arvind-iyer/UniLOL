@@ -124,6 +124,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun postItemClicked(post : Post) {
-        Toast.makeText(this, "Clicked: ${post.title}", Toast.LENGTH_LONG).show()
+        // Activate the detailed meme view, and also view all comments regarding that post
+        val intent = Intent(this@MainActivity, DetailedMemeActivity::class.java)
+        intent.putExtra("@string/post_id", post.id)
+        intent.putExtra("@string/post_url", post.url)
+        intent.putExtra("@int/post_upvotes", post.upvotes)
+        intent.putExtra("@string/post_title", post.title)
+        intent.putExtra("@string/post_user_id", post.user_id)
+        startActivity(intent)
     }
 }

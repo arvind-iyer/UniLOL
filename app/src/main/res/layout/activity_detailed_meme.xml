@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <RelativeLayout
+            android:id="@+id/comment_heading_rel_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rel_layout_toolbar">
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:scaleType="centerCrop"
+                android:id="@+id/post_thumbnail"/>
+
+            <Button
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:id="@+id/btn_post_reply"
+                android:textAlignment="center"
+                android:text="reply"
+                android:textSize="8sp"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@+id/post_thumbnail"
+                android:layout_marginRight="10dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/post_thumbnail"
+                android:layout_marginLeft="10dp">
+
+                <TextView
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/post_title"
+                    android:layout_marginTop="3dp"
+                    android:text="comment"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:textSize="10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/post_author"
+                    android:layout_marginTop="3dp"
+                    android:text="Author"
+                    android:gravity="center"
+                    android:layout_below="@+id/post_title"/>
+
+                <TextView
+                    android:textSize="10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/post_upvotes"
+                    android:layout_marginTop="3dp"
+                    android:text="Num Upvotes"
+                    android:gravity="center"
+                    android:layout_below="@+id/post_author"/>
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+
+
+        <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/comments_loading_progressbar"
+            android:layout_centerInParent="true"/>
+
+        <TextView
+            android:layout_alignBottom="@id/comments_loading_progressbar"
+            android:layout_alignTop="@id/comments_loading_progressbar"
+            android:layout_alignRight="@id/comments_loading_progressbar"
+            android:layout_alignLeft="@id/comments_loading_progressbar"
+            android:text="Loading Comments..."
+            android:textStyle="bold"
+            android:textSize="10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_text"/>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/comment_heading_rel_layout"
+            android:id="@+id/comments_list_view">
+
+        </ListView>
+
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

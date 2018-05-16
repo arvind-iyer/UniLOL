@@ -37,7 +37,8 @@ class LoginActivity : AppCompatActivity(){
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
             // Signout for demo purpose, for now every user must pass the LoginActivity
-            mAuth.signOut()
+            // mAuth.signOut()
+            startActivity(Intent(this, MainActivity::class.java).putExtra("user", currentUser))
         }
 
     }
@@ -100,7 +101,7 @@ class LoginActivity : AppCompatActivity(){
                 if (task.isSuccessful) {
                     val user = mAuth.currentUser
                     Toast.makeText(this, "Successfully Logged in, welcome ${user!!.email}!", Toast.LENGTH_LONG).show()
-                    startActivity(Intent(this, MainActivity::class.java).putExtra("username", user))
+                    startActivity(Intent(this, MainActivity::class.java).putExtra("user", user))
                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                 } else {
                     val e = task.exception as FirebaseAuthException
@@ -135,7 +136,7 @@ class LoginActivity : AppCompatActivity(){
 
                         Toast.makeText(this@LoginActivity, "Succesfully logged in using Facebook, Welcome ${displayName} !",
                                 Toast.LENGTH_LONG).show()
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java).putExtra("user", currentUser))
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                     } else {
                         // If sign in fails, display a message to the user.
