@@ -1,5 +1,6 @@
 package com.unilol.comp4521.unilol
 
+import android.app.Dialog
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.squareup.picasso.Picasso
@@ -8,7 +9,10 @@ import java.util.ArrayList
 import android.util.Log
 import android.view.View
 import android.widget.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.HashMap
 
 
 class DetailedMemeActivity: AppCompatActivity() {
@@ -30,7 +34,12 @@ class DetailedMemeActivity: AppCompatActivity() {
         setContentView(R.layout.activity_detailed_meme)
 
         mProgressBar = findViewById(R.id.comments_loading_progressbar) as ProgressBar
-        comments = ArrayList<Comment>()
+
+        val btnReply = findViewById(R.id.btn_post_reply) as Button
+
+        btnReply.setOnClickListener {
+            postUserComment()
+        }
 
         getMemeInformation()
 
@@ -61,7 +70,7 @@ class DetailedMemeActivity: AppCompatActivity() {
     private fun displayComments(){
         // Retrieve all comments from the selected post
         val db = FirebaseFirestore.getInstance()
-        Log.d(TAG, "Entering display comments!")
+        comments = ArrayList<Comment>()
         val requestComments = db.collection("posts").document(postId!!).collection("comments")
         requestComments.get().addOnCompleteListener({ task ->
                     if( task.isSuccessful ) {
@@ -99,5 +108,43 @@ class DetailedMemeActivity: AppCompatActivity() {
                     }
                 })
 
+    }
+
+    private fun postUserComment(){
+        // Given the post ID, post the user comment
+        val dialog = Dialog(this@DetailedMemeActivity)
+        dialog.setTitle("dialog")
+        dialog.setContentView(R.layout.comment_input_dialog)
+
+        val width = (resources.displayMetrics.widthPixels * 0.95).toInt()
+        val height = (resources.displayMetrics.heightPixels * 0.5).toInt()
+
+        dialog.window!!.setLayout(width, height)
+        dialog.show()
+
+        val btnPostComment = dialog.findViewById(R.id.btn_post_comment) as Button
+        val comment = dialog.findViewById(R.id.dialog_comment) as EditText
+
+        btnPostComment.setOnClickListener {
+            val db = FirebaseFirestore.getInstance()
+            val mAuth = FirebaseAuth.getInstance()
+            val commentObj = HashMap<String, Any>()
+            commentObj.put("message", comment.text.toString())
+            commentObj.put("time", FieldValue.serverTimestamp())
+            commentObj.put("upvotes", 0)
+            commentObj.put("user_id", mAuth.currentUser?.uid!!)
+
+            db.collection("posts").document(postId!!).collection("comments")
+                    .add(commentObj)
+                    .addOnSuccessListener {
+                        Toast.makeText(applicationContext, "Post comment success!", Toast.LENGTH_SHORT).show()
+                        displayComments()
+                        dialog.dismiss()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(applicationContext, "Error adding comment: ${e}", Toast.LENGTH_SHORT).show()
+                    }
+
+        }
     }
 }
