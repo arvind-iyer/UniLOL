@@ -24,7 +24,9 @@ allprojects {
         jcenter()
         maven {
             url "https://artifactory.9elements.com/artifactory/imgly"
+
         }
+        maven { url "https://jitpack.io" }
     }
 }
 
