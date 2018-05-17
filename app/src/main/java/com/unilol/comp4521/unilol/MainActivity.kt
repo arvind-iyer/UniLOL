@@ -11,6 +11,7 @@ import android.support.annotation.NonNull
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.android.gms.tasks.OnCompleteListener
@@ -30,6 +31,8 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
+    val TAG = "MainActivity"
+
     private val mStorage = FirebaseStorage.getInstance().getReference()
     private val PICK_IMAGE_REQUEST = 1
     private lateinit var recyclerView : RecyclerView
@@ -125,12 +128,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun postItemClicked(post : Post) {
         // Activate the detailed meme view, and also view all comments regarding that post
-        val intent = Intent(this@MainActivity, DetailedMemeActivity::class.java)
-        intent.putExtra("@string/post_id", post.id)
-        intent.putExtra("@string/post_url", post.url)
-        intent.putExtra("@int/post_upvotes", post.upvotes)
-        intent.putExtra("@string/post_title", post.title)
-        intent.putExtra("@string/post_user_id", post.user_id)
-        startActivity(intent)
+        // Before switching activity request the username of the corresponding meme
+        // Create another request to extract the username
+        val requestUsername = mDB.collection("users").document(post.user_id)
+        requestUsername.get().addOnCompleteListener({task ->
+            if(task.isSuccessful) {
+                val userObj = task.result.data
+                val intent = Intent(this@MainActivity, DetailedMemeActivity::class.java)
+                intent.putExtra("@string/post_id", post.id)
+                intent.putExtra("@string/post_url", post.url)
+                intent.putExtra("@int/post_upvotes", post.upvotes)
+                intent.putExtra("@string/post_title", post.title)
+                intent.putExtra("@string/post_user_id", userObj!!.getValue("username").toString())
+                startActivity(intent)
+            }
+            else{
+                Log.d(TAG, "Error while collecting username! ${task.exception}")
+            }
+        })
     }
 }

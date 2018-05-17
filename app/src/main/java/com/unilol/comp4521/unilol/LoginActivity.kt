@@ -37,7 +37,7 @@ class LoginActivity : AppCompatActivity(){
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
             // Signout for demo purpose, for now every user must pass the LoginActivity
-            // mAuth.signOut()
+//            mAuth.signOut()
             startActivity(Intent(this, MainActivity::class.java).putExtra("user", currentUser))
         }
 
@@ -127,9 +127,13 @@ class LoginActivity : AppCompatActivity(){
                         val currentUser = mAuth.currentUser
                         val displayName = currentUser!!.displayName
                         val fullName = displayName
+
                         val userObj = HashMap<String, String>()
                         userObj.put("fullName", fullName!!)
-
+                        userObj.put("username", fullName!!)
+                        userObj.put("email", currentUser.email!!)
+                        // Put a standard profile picture for every new user
+                        userObj.put("profilePictureURL", currentUser.photoUrl.toString())
                         firestore.collection("users")
                                 .document(mAuth.currentUser?.uid!!)
                                 .set(userObj as Map<String, String>)

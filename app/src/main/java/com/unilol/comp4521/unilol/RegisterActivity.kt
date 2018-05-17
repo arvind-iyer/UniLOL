@@ -49,10 +49,18 @@ class RegisterActivity : AppCompatActivity(){
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
+
                             // Sign in success, update UI with the signed-in user's information
                             val firestore = FirebaseFirestore.getInstance()
                             val userObj = HashMap<String, String>()
                             userObj.put("fullName", fullName)
+                            userObj.put("username", username)
+                            userObj.put("email", email)
+                            // Put a standard profile picture for every new user
+                            userObj.put("profilePictureURL", "https://firebasestorage.googleapis.com/" +
+                                    "v0/b/unilol-e3a9e.appspot.com/o/images%2Fduck.jpeg" +
+                                    "?alt=media&token=3872ff68-084e-47b6-b289-a68106cd1346")
+
                             firestore.collection("users")
                                     .document(mAuth.currentUser?.uid!!)
                                     .set(userObj as Map<String, String>)
