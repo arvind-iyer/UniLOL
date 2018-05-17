@@ -5,18 +5,10 @@ import android.support.v7.app.AppCompatActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detailed_meme.*
 import java.util.ArrayList
-import java.nio.file.Files.exists
-import com.google.firebase.firestore.DocumentSnapshot
-import android.support.annotation.NonNull
-import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
 import android.widget.*
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_main.*
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-import kotlinx.android.synthetic.main.comment_layout.*
 
 
 class DetailedMemeActivity: AppCompatActivity() {
