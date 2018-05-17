@@ -9,6 +9,7 @@ import java.util.ArrayList
 import android.util.Log
 import android.view.View
 import android.widget.*
+import com.ceylonlabs.imageviewpopup.ImagePopup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -65,6 +66,12 @@ class DetailedMemeActivity: AppCompatActivity() {
         post_author.setText(postUserId)
         post_upvotes.setText("${postUpvotes.toString()} upvotes")
         Picasso.get().load(postURL).into(post_thumbnail)
+        val imagePopup = ImagePopup(this);
+        imagePopup.setImageOnClickClose(true);  // Optional
+        post_thumbnail.setOnClickListener({
+            imagePopup.initiatePopup(post_thumbnail.drawable)
+            imagePopup.viewPopup();
+        })
     }
 
     private fun displayComments(){
