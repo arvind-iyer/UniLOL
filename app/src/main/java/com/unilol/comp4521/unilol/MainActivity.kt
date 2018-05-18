@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
@@ -47,14 +49,22 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val inflater = menuInflater
-//        inflater.inflate(R.menu.menu_main, menu)
-//        return true
-//    }
-//
-//
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId){
+        R.id.menu_refresh ->
+        {
+            loadPosts()
+            true
+        }
+        else -> true
+    }
     fun loadPosts() {
+        posts.clear()
         mDB.collection("posts")
             .get()
             .addOnCompleteListener({ task ->
