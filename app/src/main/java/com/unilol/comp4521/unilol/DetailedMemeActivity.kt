@@ -78,7 +78,6 @@ class DetailedMemeActivity: AppCompatActivity() {
         // Retrieve all comments from the selected post
         val db = FirebaseFirestore.getInstance()
         comments = ArrayList<Comment>()
-        Log.d(TAG, "POST ID: ${postId}")
         val requestComments = db.collection("posts").document(postId!!).collection("comments")
         requestComments.get().addOnCompleteListener({ task ->
                     if( task.isSuccessful ) {
@@ -98,7 +97,7 @@ class DetailedMemeActivity: AppCompatActivity() {
                                             comment.upvotes,
                                             comment.time
                                     ))
-                                    val adapter = CommentsListAdapter(this@DetailedMemeActivity, R.layout.comment_layout, comments!!)
+                                    val adapter = CommentsListAdapter(this@DetailedMemeActivity, R.layout.comment_layout, comments!!, postId!!)
 
                                     mListView!!.setAdapter(adapter)
                                 }

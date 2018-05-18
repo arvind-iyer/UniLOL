@@ -37,10 +37,10 @@ class LoginActivity : AppCompatActivity(){
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
             // Signout for demo purpose, for now every user must pass the LoginActivity
-//            mAuth.signOut()
+            mAuth.signOut()
 
             // Skip login page if user already exists in Firebase instance
-            startActivity(Intent(this, MainActivity::class.java).putExtra("user", currentUser))
+//            startActivity(Intent(this, MainActivity::class.java).putExtra("user", currentUser))
         }
 
     }

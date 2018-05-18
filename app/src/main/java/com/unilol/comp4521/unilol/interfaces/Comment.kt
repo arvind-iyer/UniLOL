@@ -5,8 +5,8 @@ import java.util.*
 
 data class Comment (
     var id: String = "",
-    val message: String = "",
-    val user_id: String = "",
-    val upvotes: Int = 0,
-    val time: Date = Date()
+    var message: String = "",
+    var user_id: String = "",
+    var upvotes: Int = 0,
+    var time: Date = Date()
 )

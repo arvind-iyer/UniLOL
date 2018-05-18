@@ -8,15 +8,17 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.like.LikeButton
 import com.like.OnLikeListener
 import com.unilol.comp4521.unilol.R
-import com.unilol.comp4521.unilol.toast
 import java.util.ArrayList
 
 class CommentsListAdapter
-(private val mContext: Context, private val mResource: Int, objects: ArrayList<Comment>) : ArrayAdapter<Comment>(mContext, mResource, objects) {
+(private val mContext: Context, private val mResource: Int, objects: ArrayList<Comment>, postId: String) : ArrayAdapter<Comment>(mContext, mResource, objects) {
     private var lastPosition = -1
+    private val postId = postId
 
     /**
      * Holds variables in a View
@@ -38,6 +40,12 @@ class CommentsListAdapter
         val author = getItem(position)!!.user_id
         val upvotes = getItem(position)!!.upvotes.toString() + " upvotes"
         val time = getItem(position)!!.time.toString()
+        val db = FirebaseFirestore.getInstance()
+        val currentUser = FirebaseAuth.getInstance().currentUser!!
+        val requestUser = db.collection("users").document(currentUser.uid)
+        val requestComment = db.collection("posts").document(postId)
+                .collection("comments")
+                .document(id)
 
         try {
             //create the view result for showing the animation
@@ -71,20 +79,99 @@ class CommentsListAdapter
             holder.author!!.setText(author)
             holder.upvotes!!.setText(upvotes)
             holder.time!!.setText(time.toString())
-            holder.mProgressBar!!.visibility = View.GONE
 
-            holder.commentLikeButton!!.setOnLikeListener(object: OnLikeListener {
-                override fun liked(p0: LikeButton?) {
-                    "Liked comment ${id}".toast(convertView.context)
+            // Get the comments liked from the current user and light the heart up
+            requestUser.get().addOnCompleteListener({task ->
+                if(task.isSuccessful) {
+                    val user = task.result.toObject(User::class.java)
+                    user!!.votes.comments.forEach {
+                        key, value ->
+                        if (key == id)
+                            holder.commentLikeButton!!.isLiked = true
+                    }
                 }
-
-                override fun unLiked(p0: LikeButton?) {
-                    "Unliked post ${id}".toast(convertView.context)
+                else{
+                    Log.d(TAG, "Error collecting user! ${task.exception}")
                 }
             })
 
 
+
+            holder.mProgressBar!!.visibility = View.GONE
+
+            holder.commentLikeButton!!.setOnLikeListener(object: OnLikeListener {
+                override fun liked(p0: LikeButton?) {
+                    requestUser.get().addOnCompleteListener({task ->
+                        if(task.isSuccessful) {
+                            val user = task.result.toObject(User::class.java)
+                            user!!.votes.comments[id] = 1
+
+                            // Update the liked the comment to the server
+                            requestUser.update("votes.comments", user.votes.comments).addOnCompleteListener({task_inner->
+                                if(task_inner.isSuccessful){
+                                    Log.d(TAG, "Added liked comment to the server")
+                                }
+                                else{
+                                    Log.d(TAG, "Fail adding liked comment to the server")
+                                }
+                            })
+
+                            // Add number of upvote of the given comment
+                            getItem(position)!!.upvotes += 1
+
+                            requestComment.update("upvotes", getItem(position)!!.upvotes).addOnCompleteListener({task_inner->
+                                if(task_inner.isSuccessful){
+                                    Log.d(TAG, "Added number of upvotes")
+                                    holder.upvotes!!.setText(getItem(position)!!.upvotes.toString() + " upvotes")
+                                }
+                                else{
+                                    Log.d(TAG, "Failed adding number of upvotes")
+                                }
+                            })
+                        }
+                        else{
+                            Log.d(TAG, "Error collecting user! ${task.exception}")
+                        }
+                    })
+                }
+
+                override fun unLiked(p0: LikeButton?) {
+                    requestUser.get().addOnCompleteListener({task ->
+                        if(task.isSuccessful) {
+                            val user = task.result.toObject(User::class.java)
+                            user!!.votes.comments.remove(id)
+
+                            // Remove the liked comment from the server
+                            requestUser.update("votes.comments", user.votes.comments).addOnCompleteListener({task_inner->
+                                if(task_inner.isSuccessful){
+                                    Log.d(TAG, "Unliked comment from the server")
+                                }
+                                else{
+                                    Log.d(TAG, "Failed unliking comment from the server")
+                                }
+                            })
+
+                            // Add number of upvote of the given comment
+                            getItem(position)!!.upvotes -= 1
+
+                            requestComment.update("upvotes", getItem(position)!!.upvotes).addOnCompleteListener({task_inner->
+                                if(task_inner.isSuccessful){
+                                    Log.d(TAG, "Added number of upvotes")
+                                    holder.upvotes!!.setText(getItem(position)!!.upvotes.toString() + " upvotes")
+                                }
+                                else{
+                                    Log.d(TAG, "Failed adding number of upvotes")
+                                }
+                            })
+                        }
+                        else{
+                            Log.d(TAG, "Error collecting user! ${task.exception}")
+                        }
+                    })
+                }
+            })
             return convertView
+
         } catch (e: IllegalArgumentException) {
             Log.e(TAG, "getView: IllegalArgumentException: " + e.message)
             return convertView!!
