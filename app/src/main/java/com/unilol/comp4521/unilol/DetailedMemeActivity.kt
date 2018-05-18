@@ -82,7 +82,6 @@ class DetailedMemeActivity: AppCompatActivity() {
         requestComments.get().addOnCompleteListener({ task ->
                     if( task.isSuccessful ) {
                         mListView = findViewById(R.id.comments_list_view) as ListView
-                        val commentObjects = task.result.toObjects(Comment::class.java)
                         task.result.forEach{
                             commentSnapshot ->
                             val comment = commentSnapshot.toObject(Comment::class.java)
@@ -93,11 +92,20 @@ class DetailedMemeActivity: AppCompatActivity() {
                                     comments!!.add(Comment(
                                             commentSnapshot.id,
                                             comment.message,
-                                            userObj!!.username,
+                                            userObj!!.id,
                                             comment.upvotes,
                                             comment.time
                                     ))
-                                    val adapter = CommentsListAdapter(this@DetailedMemeActivity, R.layout.comment_layout, comments!!, postId!!)
+                                    val sortedComments = ArrayList<Comment>(comments!!.sortedWith(object: Comparator<Comment>{
+                                        override fun compare(p1: Comment, p2: Comment): Int = when {
+                                            p1.upvotes < p2.upvotes -> 1
+                                            p1.upvotes == p2.upvotes -> 0
+                                            else -> -1
+                                        }
+                                    }))
+
+                                    val adapter = CommentsListAdapter(this@DetailedMemeActivity,
+                                            R.layout.comment_layout, sortedComments, postId!!)
 
                                     mListView!!.setAdapter(adapter)
                                 }

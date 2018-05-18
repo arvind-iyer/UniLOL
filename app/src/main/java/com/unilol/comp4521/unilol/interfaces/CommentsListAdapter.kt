@@ -6,13 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.like.LikeButton
 import com.like.OnLikeListener
+import com.squareup.picasso.Picasso
 import com.unilol.comp4521.unilol.R
+import org.ocpsoft.prettytime.PrettyTime
 import java.util.ArrayList
 
 class CommentsListAdapter
@@ -30,6 +33,7 @@ class CommentsListAdapter
         internal var time: TextView? = null
         internal var mProgressBar: ProgressBar? = null
         internal var commentLikeButton: LikeButton? = null
+        internal var commentProfilePicture: ImageView? = null
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -39,10 +43,11 @@ class CommentsListAdapter
         val comment = getItem(position)!!.message
         val author = getItem(position)!!.user_id
         val upvotes = getItem(position)!!.upvotes.toString() + " upvotes"
-        val time = getItem(position)!!.time.toString()
+        val time = PrettyTime().format(getItem(position)!!.time)
         val db = FirebaseFirestore.getInstance()
         val currentUser = FirebaseAuth.getInstance().currentUser!!
         val requestUser = db.collection("users").document(currentUser.uid)
+        val requestCommentUser = db.collection("users").document(author)
         val requestComment = db.collection("posts").document(postId)
                 .collection("comments")
                 .document(id)
@@ -64,6 +69,7 @@ class CommentsListAdapter
                 holder.time = convertView.findViewById(R.id.comment_time) as TextView
                 holder.mProgressBar = convertView.findViewById(R.id.comment_progressbar) as ProgressBar
                 holder.commentLikeButton = convertView.findViewById(R.id.comment_like_button) as LikeButton
+                holder.commentProfilePicture = convertView.findViewById(R.id.comment_profpic) as ImageView
                 convertView.tag = holder
 
 
@@ -76,9 +82,21 @@ class CommentsListAdapter
             lastPosition = position
 
             holder.comment!!.setText(comment)
-            holder.author!!.setText(author)
             holder.upvotes!!.setText(upvotes)
             holder.time!!.setText(time.toString())
+
+
+            requestCommentUser.get().addOnCompleteListener({task ->
+                if(task.isSuccessful) {
+                    val user = task.result.toObject(User::class.java)
+                    Picasso.get().load(user!!.profilePictureUrl).into(holder.commentProfilePicture)
+                    holder.author!!.setText(user.username)
+                }
+                else{
+                    Log.d(TAG, "Error collecting comment user! ${task.exception}")
+                }
+            })
+
 
             // Get the comments liked from the current user and light the heart up
             requestUser.get().addOnCompleteListener({task ->
