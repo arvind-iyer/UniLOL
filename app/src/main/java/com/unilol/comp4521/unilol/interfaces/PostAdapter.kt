@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.like.LikeButton
 import com.like.OnLikeListener
 import com.squareup.picasso.Picasso
@@ -39,23 +40,52 @@ class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) 
         val likeButton = itemView.findViewById<LikeButton>(R.id.upvote_button)
         val dislikeButton = itemView.findViewById<LikeButton>(R.id.downvote_button)
         private val currentUser = FirebaseAuth.getInstance().currentUser!!
-        private val userRef = FirebaseFirestore.getInstance().collection("users")
-                .whereEqualTo("id", currentUser.uid)
+
 
 
         fun bind(post: Post, clickListener: (Post) -> Unit) {
             // Bind the click listener to title and image
             var user = User()
-            userRef.get()
-                    .addOnCompleteListener {
-                        if(it.isSuccessful) {
-                            it.result.forEach { u ->
-                                user = u.toObject(User::class.java)
-                            }
-                        }
+            val userRef = FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .whereEqualTo("id", currentUser.uid).get()
+            userRef.addOnCompleteListener {
+                if(it.isSuccessful) {
+                    it.result.forEach { u : QueryDocumentSnapshot ->
+                        user = u.toObject(User::class.java)
+                        user.id = u.id
+                        Log.d("user/", u.id)
                     }
-            if (user.id.equals("")) {
-                return
+                }
+
+                likeButton.setOnLikeListener(object: OnLikeListener {
+                    override fun liked(p0: LikeButton?) {
+                        dislikeButton.isLiked = false
+                        "Liked post ${post.id}".toast(itemView.context)
+                        user.votes.posts[post.id] = 1
+                        post.upvotes += 1
+                        Log.d("like/", "${user.votes.posts}")
+                        Log.d("like/", "${post.upvotes}")
+                    }
+
+                    override fun unLiked(p0: LikeButton?) {
+                        "Unliked post ${post.id}".toast(itemView.context)
+                        user.votes.posts.remove(post.id)
+                    }
+                })
+
+                dislikeButton.setOnLikeListener(object: OnLikeListener {
+                    override fun liked(p0: LikeButton?) {
+                        likeButton.isLiked = false
+                        "Disliked post ${post.id}".toast(itemView.context)
+                        user.votes.posts[post.id] = -1
+                    }
+
+                    override fun unLiked(p0: LikeButton?) {
+                        "Undisliked post ${post.id}".toast(itemView.context)
+                        user.votes.posts.remove(post.id)
+                    }
+                })
             }
 
             itemView.setOnClickListener {
@@ -65,34 +95,7 @@ class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) 
                 clickListener(post)
             }
 
-            likeButton.setOnLikeListener(object: OnLikeListener {
-                override fun liked(p0: LikeButton?) {
-                    dislikeButton.isLiked = false
-                    "Liked post ${post.id}".toast(itemView.context)
-                    user.votes.posts[post.id] = 1
-                    post.upvotes += 1
-                    Log.d("like/", "${user.votes.posts}")
-                    Log.d("like/", "${post.upvotes}")
-                }
 
-                override fun unLiked(p0: LikeButton?) {
-                    "Unliked post ${post.id}".toast(itemView.context)
-                    user.votes.posts.remove(post.id)
-                }
-            })
-
-            dislikeButton.setOnLikeListener(object: OnLikeListener {
-                override fun liked(p0: LikeButton?) {
-                    likeButton.isLiked = false
-                    "Disliked post ${post.id}".toast(itemView.context)
-                    user.votes.posts[post.id] = -1
-                }
-
-                override fun unLiked(p0: LikeButton?) {
-                    "Undisliked post ${post.id}".toast(itemView.context)
-                    user.votes.posts.remove(post.id)
-                }
-            })
         }
     }
 
