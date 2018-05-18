@@ -1,4 +1,4 @@
-package com.unilol.comp4521.unilol
+package com.unilol.comp4521.unilol.interfaces
 
 import android.content.Context
 import android.util.Log
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.unilol.comp4521.unilol.R
 import java.util.ArrayList
 
 class CommentsListAdapter
@@ -28,10 +29,10 @@ class CommentsListAdapter
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
 
-        val comment = getItem(position)!!.comment
-        val author = getItem(position)!!.author
+        val comment = getItem(position)!!.message
+        val author = getItem(position)!!.user_id
         val upvotes = getItem(position)!!.upvotes.toString() + " upvotes"
-        val time = getItem(position)!!.time
+        val time = getItem(position)!!.time.toString()
 
         try {
             //create the view result for showing the animation

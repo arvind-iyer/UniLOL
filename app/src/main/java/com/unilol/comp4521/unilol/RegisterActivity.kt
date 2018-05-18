@@ -3,17 +3,15 @@ package com.unilol.comp4521.unilol
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_register.*
-import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.auth.UserProfileChangeRequest
-
-
+import com.unilol.comp4521.unilol.interfaces.User
+import kotlinx.android.synthetic.main.activity_register.*
 
 
 /**
@@ -29,7 +27,7 @@ class RegisterActivity : AppCompatActivity(){
 
         mDatabase = FirebaseDatabase.getInstance().getReference("Names")
 
-        btn_register.setOnClickListener(View.OnClickListener {
+        btn_register.setOnClickListener({
             view -> registerUser()
         })
 
@@ -52,18 +50,17 @@ class RegisterActivity : AppCompatActivity(){
 
                             // Sign in success, update UI with the signed-in user's information
                             val firestore = FirebaseFirestore.getInstance()
-                            val userObj = HashMap<String, String>()
-                            userObj.put("fullName", fullName)
-                            userObj.put("username", username)
-                            userObj.put("email", email)
-                            // Put a standard profile picture for every new user
-                            userObj.put("profilePictureURL", "https://firebasestorage.googleapis.com/" +
-                                    "v0/b/unilol-e3a9e.appspot.com/o/images%2Fduck.jpeg" +
-                                    "?alt=media&token=3872ff68-084e-47b6-b289-a68106cd1346")
+                            val currentUser = mAuth.currentUser
 
-                            firestore.collection("users")
-                                    .document(mAuth.currentUser?.uid!!)
-                                    .set(userObj as Map<String, String>)
+                            val newUser = User(
+                                    id=currentUser!!.uid,
+                                    username = username,
+                                    profilePictureUrl = "https://firebasestorage.googleapis.com/v0/b/" +
+                                            "unilol-e3a9e.appspot.com/o/images%2Fduck.jpeg",
+                                    email=email,
+                                    fullName=fullName)
+
+                            firestore.collection("users").document(currentUser.uid).set(newUser)
 
                             val user = mAuth.currentUser
 
@@ -132,6 +129,6 @@ class RegisterActivity : AppCompatActivity(){
             input_username.setError(null)
         }
 
-        return valid;
+        return valid
     }
 }

@@ -1,11 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:layout_marginStart="30dp"
     android:layout_marginEnd="30dp"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- A CardView that contains a TextView -->
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
@@ -53,7 +52,24 @@
                 android:paddingRight="@dimen/meme_title_padding"
                 android:textSize="@dimen/songs_count" />
 
+            <com.like.LikeButton
+                app:icon_type="thumb"
+                app:icon_size="25dp"
+                android:id="@+id/upvote_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/count"/>
+            <com.like.LikeButton
+                app:icon_type="thumb"
+                app:icon_size="25dp"
+                android:rotationX="180"
+                android:rotationY="180"
 
+                android:id="@+id/downvote_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/count"
+                android:layout_alignParentEnd="true"/>
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

@@ -1,26 +1,30 @@
 package com.unilol.comp4521.unilol
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.firebase.storage.FileDownloadTask
-import com.google.android.gms.tasks.OnSuccessListener
+import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.unilol.comp4521.unilol.interfaces.Post
+import com.unilol.comp4521.unilol.interfaces.PostAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
 import java.util.*
 
+fun Any.toast(context: Context, duration: Int = Toast.LENGTH_SHORT) : Toast {
+    return Toast.makeText(context, this.toString(), duration).apply { show() }
+}
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
@@ -42,11 +46,13 @@ class MainActivity : AppCompatActivity() {
                     if( task.isSuccessful ) {
                         task.result.forEach { q ->
                             println("Title: ${q.get("title")}")
-                            posts.add(q.toObject(Post::class.java))
+                            val post = q.toObject(Post::class.java)
+                            post.id = q.id
+                            posts.add(post)
                         }
 
                         viewManager = LinearLayoutManager(this)
-                        viewAdapter = PostAdapter(posts, { post : Post -> postItemClicked(post) })
+                        viewAdapter = PostAdapter(posts, { post: Post -> postItemClicked(post) })
                         recyclerView = memes_recycler.apply {
                             setHasFixedSize(true)
                             layoutManager = viewManager
@@ -58,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             })
 
 
-        post_new_meme.setOnClickListener(View.OnClickListener {
+        post_new_meme.setOnClickListener({
             val intent = Intent(this, MakeMemeActivity::class.java)
             startActivityForResult(intent, Activity.RESULT_CANCELED)
         })
@@ -68,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
+        "Select a picture to upload".toast(view.context)
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
     }
 
@@ -87,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                     memeRef.child(memeUUID)
                             .putFile(uri)
                             .addOnSuccessListener { taskSnapshot ->
-                                val downloadUrl = taskSnapshot.downloadUrl
+//                                val downloadUrl = taskSnapshot.downloadUrl
                                 //TODO: Add database entry with this link
 
                             }
@@ -107,12 +114,12 @@ class MainActivity : AppCompatActivity() {
         val memeRef = mStorage.child("images")
         val localFile = File.createTempFile("images", "jpg")
         memeRef.getFile(localFile)
-                .addOnSuccessListener(OnSuccessListener<FileDownloadTask.TaskSnapshot> {
+                .addOnSuccessListener({
                     // Successfully downloaded data to local file
                     // ...
                     val mbp = BitmapFactory.decodeFile(localFile.absolutePath)
                     image_holder.setImageBitmap(mbp)
-                }).addOnFailureListener(OnFailureListener {
+                }).addOnFailureListener({
             // Handle failed download
             // ...
         })
