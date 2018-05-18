@@ -15,6 +15,7 @@ data class User (
         val profilePictureUrl: String,
         val posts: ArrayList<Post>?,
         val votes: Votes?,
-        val email: String
+        val email: String,
+        val fullName: String
 )
 

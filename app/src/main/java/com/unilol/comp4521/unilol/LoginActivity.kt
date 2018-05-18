@@ -16,6 +16,8 @@ import com.facebook.CallbackManager
 import com.facebook.AccessToken
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import com.unilol.comp4521.unilol.interfaces.Post
+import com.unilol.comp4521.unilol.interfaces.User
 
 
 /**
@@ -37,8 +39,8 @@ class LoginActivity : AppCompatActivity(){
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
             // Signout for demo purpose, for now every user must pass the LoginActivity
-//            mAuth.signOut()
-            startActivity(Intent(this, MainActivity::class.java).putExtra("user", currentUser))
+            mAuth.signOut()
+//            startActivity(Intent(this, MainActivity::class.java).putExtra("user", currentUser))
         }
 
     }
@@ -126,25 +128,26 @@ class LoginActivity : AppCompatActivity(){
                         Log.d(TAG, "signin with facebook success!")
                         val currentUser = mAuth.currentUser
                         val displayName = currentUser!!.displayName
-                        val fullName = displayName
 
-                        val userObj = HashMap<String, String>()
-                        userObj.put("fullName", fullName!!)
-                        userObj.put("username", fullName!!)
-                        userObj.put("email", currentUser.email!!)
-                        // Put a standard profile picture for every new user
-                        userObj.put("profilePictureURL", currentUser.photoUrl.toString())
-                        firestore.collection("users")
-                                .document(mAuth.currentUser?.uid!!)
-                                .set(userObj as Map<String, String>)
+                        if(task.result.additionalUserInfo.isNewUser) {
+                            // Create a new document on "users" collection on DB if it is a new user
+                            val newUser = User(currentUser.uid, displayName!!,
+                                    currentUser.photoUrl.toString(),
+                                    ArrayList<Post>(),
+                                    null,
+                                    currentUser.email!!,
+                                    displayName)
+
+                            firestore.collection("users").document(currentUser.uid).set(newUser)
+                        }
 
                         Toast.makeText(this@LoginActivity, "Succesfully logged in using Facebook, Welcome ${displayName} !",
                                 Toast.LENGTH_LONG).show()
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java).putExtra("user", currentUser))
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                     } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "sign in with facebook failure", task.getException())
+                        // If sign in fails, display a message rto the user.
+                        Log.w(TAG, "Sign in with Facebook failure", task.getException())
                         Toast.makeText(this@LoginActivity, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show()
                     }

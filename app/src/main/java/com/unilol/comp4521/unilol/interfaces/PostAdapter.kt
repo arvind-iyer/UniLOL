@@ -21,7 +21,7 @@ data class Post(
         val upvotes: Int = 0,
         val url : String = "",
         val user_id : String = "",
-        val timestamp: Date = Timestamp.now().approximateDate!!
+        val timestamp: Date = Date()
 )
 
 public class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) -> Unit):

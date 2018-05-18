@@ -15,6 +15,8 @@ import com.google.firebase.storage.FileDownloadTask
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.unilol.comp4521.unilol.interfaces.Post
+import com.unilol.comp4521.unilol.interfaces.PostAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException

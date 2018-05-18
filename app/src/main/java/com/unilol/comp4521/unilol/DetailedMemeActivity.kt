@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detailed_meme.*
-import java.util.ArrayList
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -13,7 +12,9 @@ import com.ceylonlabs.imageviewpopup.ImagePopup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.HashMap
+import java.util.*
+import com.unilol.comp4521.unilol.interfaces.Comment
+import com.unilol.comp4521.unilol.interfaces.CommentsListAdapter
 
 
 class DetailedMemeActivity: AppCompatActivity() {
@@ -27,7 +28,6 @@ class DetailedMemeActivity: AppCompatActivity() {
 
     private var comments: ArrayList<Comment>? = null
     private var mProgressBar: ProgressBar? = null
-    private var progressText: TextView? = null
     private var mListView: ListView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +94,7 @@ class DetailedMemeActivity: AppCompatActivity() {
                                             commentObj.getValue("message").toString(),
                                             userObj!!.getValue("username").toString(),
                                             commentObj.getValue("upvotes").toString().toInt(),
-                                            commentObj.getValue("time").toString()
+                                            commentObj.getValue("time") as Date
                                     ))
                                     val adapter = CommentsListAdapter(this@DetailedMemeActivity, R.layout.comment_layout, comments!!)
 
@@ -140,6 +140,7 @@ class DetailedMemeActivity: AppCompatActivity() {
             commentObj.put("time", FieldValue.serverTimestamp())
             commentObj.put("upvotes", 0)
             commentObj.put("user_id", mAuth.currentUser?.uid!!)
+
 
             db.collection("posts").document(postId!!).collection("comments")
                     .add(commentObj)
