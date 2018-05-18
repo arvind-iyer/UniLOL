@@ -1,4 +1,4 @@
-package com.unilol.comp4521.unilol
+package com.unilol.comp4521.unilol.interfaces
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.firebase.Timestamp
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.post_layout.view.*
+import com.unilol.comp4521.unilol.R
+import java.util.*
 
 /**
  * Created by arvind on 1/5/18.
@@ -18,7 +20,8 @@ data class Post(
         val title: String = "",
         val upvotes: Int = 0,
         val url : String = "",
-        val user_id : String = ""
+        val user_id : String = "",
+        val timestamp: Date = Timestamp.now().approximateDate!!
 )
 
 public class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) -> Unit):
@@ -40,7 +43,7 @@ public class PostAdapter(private val posts: ArrayList<Post>, val clickListener: 
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.post_layout, parent, false) as View
         return ViewHolder(view)
