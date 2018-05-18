@@ -40,36 +40,44 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mDB.collection("posts")
-            .get()
-            .addOnCompleteListener({ task ->
-                    if( task.isSuccessful ) {
-                        task.result.forEach { q ->
-                            println("Title: ${q.get("title")}")
-                            val post = q.toObject(Post::class.java)
-                            post.id = q.id
-                            posts.add(post)
-                        }
-
-                        viewManager = LinearLayoutManager(this)
-                        viewAdapter = PostAdapter(posts, { post: Post -> postItemClicked(post) })
-                        recyclerView = memes_recycler.apply {
-                            setHasFixedSize(true)
-                            layoutManager = viewManager
-                            adapter = viewAdapter
-                        }
-
-
-                    }
-            })
-
-
+        loadPosts()
         post_new_meme.setOnClickListener({
             val intent = Intent(this, MakeMemeActivity::class.java)
             startActivityForResult(intent, Activity.RESULT_CANCELED)
         })
     }
 
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        val inflater = menuInflater
+//        inflater.inflate(R.menu.menu_main, menu)
+//        return true
+//    }
+//
+//
+    fun loadPosts() {
+        mDB.collection("posts")
+            .get()
+            .addOnCompleteListener({ task ->
+                if( task.isSuccessful ) {
+                    task.result.forEach { q ->
+                        println("Title: ${q.get("title")}")
+                        val post = q.toObject(Post::class.java)
+                        post.id = q.id
+                        posts.add(post)
+                    }
+
+                    viewManager = LinearLayoutManager(this)
+                    viewAdapter = PostAdapter(posts, { post: Post -> postItemClicked(post) })
+                    recyclerView = memes_recycler.apply {
+                        setHasFixedSize(true)
+                        layoutManager = viewManager
+                        adapter = viewAdapter
+                    }
+
+
+                }
+            })
+    }
     fun uploadMeme(view: View) {
         val intent = Intent()
         intent.type = "image/*"
