@@ -4,6 +4,7 @@ import java.util.*
 
 
 data class Comment (
+    var id: String = "",
     val message: String = "",
     val user_id: String = "",
     val upvotes: Int = 0,

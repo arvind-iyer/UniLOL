@@ -78,18 +78,21 @@ class DetailedMemeActivity: AppCompatActivity() {
         // Retrieve all comments from the selected post
         val db = FirebaseFirestore.getInstance()
         comments = ArrayList<Comment>()
+        Log.d(TAG, "POST ID: ${postId}")
         val requestComments = db.collection("posts").document(postId!!).collection("comments")
         requestComments.get().addOnCompleteListener({ task ->
                     if( task.isSuccessful ) {
                         mListView = findViewById(R.id.comments_list_view) as ListView
                         val commentObjects = task.result.toObjects(Comment::class.java)
-                        for (comment in commentObjects) {
-                            // Create another request to extract the username
+                        task.result.forEach{
+                            commentSnapshot ->
+                            val comment = commentSnapshot.toObject(Comment::class.java)
                             val requestUsername = db.collection("users").document(comment.user_id.toString())
-                            requestUsername.get().addOnCompleteListener({task_inner ->
-                                if(task_inner.isSuccessful) {
-                                    val userObj = task_inner.result.toObject(User::class.java)
+                            requestUsername.get().addOnCompleteListener({taskInner ->
+                                if(taskInner.isSuccessful) {
+                                    val userObj = taskInner.result.toObject(User::class.java)
                                     comments!!.add(Comment(
+                                            commentSnapshot.id,
                                             comment.message,
                                             userObj!!.username,
                                             comment.upvotes,
@@ -135,7 +138,13 @@ class DetailedMemeActivity: AppCompatActivity() {
             val db = FirebaseFirestore.getInstance()
             val mAuth = FirebaseAuth.getInstance()
 
-            val newComment = Comment(comment.text.toString(), mAuth.currentUser?.uid!!, 0, Date())
+            val newComment = Comment(
+                    id = "",
+                    message = comment.text.toString(),
+                    user_id = mAuth.currentUser?.uid!!,
+                    upvotes = 0,
+                    time = Date())
+
             db.collection("posts").document(postId!!).collection("comments")
                     .add(newComment)
                     .addOnSuccessListener {
@@ -146,7 +155,6 @@ class DetailedMemeActivity: AppCompatActivity() {
                     .addOnFailureListener { e ->
                         Toast.makeText(applicationContext, "Error adding comment: ${e}", Toast.LENGTH_SHORT).show()
                     }
-
         }
     }
 }

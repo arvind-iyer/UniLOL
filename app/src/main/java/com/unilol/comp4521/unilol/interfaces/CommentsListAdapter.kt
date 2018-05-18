@@ -8,7 +8,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.like.LikeButton
+import com.like.OnLikeListener
 import com.unilol.comp4521.unilol.R
+import com.unilol.comp4521.unilol.toast
 import java.util.ArrayList
 
 class CommentsListAdapter
@@ -24,11 +27,13 @@ class CommentsListAdapter
         internal var upvotes: TextView? = null
         internal var time: TextView? = null
         internal var mProgressBar: ProgressBar? = null
+        internal var commentLikeButton: LikeButton? = null
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
 
+        val id = getItem(position)!!.id
         val comment = getItem(position)!!.message
         val author = getItem(position)!!.user_id
         val upvotes = getItem(position)!!.upvotes.toString() + " upvotes"
@@ -50,13 +55,12 @@ class CommentsListAdapter
                 holder.upvotes = convertView.findViewById(R.id.comment_upvotes) as TextView
                 holder.time = convertView.findViewById(R.id.comment_time) as TextView
                 holder.mProgressBar = convertView.findViewById(R.id.comment_progressbar) as ProgressBar
-
-                result = convertView
-
+                holder.commentLikeButton = convertView.findViewById(R.id.comment_like_button) as LikeButton
                 convertView.tag = holder
+
+
             } else {
                 holder = convertView.tag as ViewHolder
-                result = convertView
                 holder.mProgressBar!!.visibility = View.VISIBLE
             }
 
@@ -68,6 +72,16 @@ class CommentsListAdapter
             holder.upvotes!!.setText(upvotes)
             holder.time!!.setText(time.toString())
             holder.mProgressBar!!.visibility = View.GONE
+
+            holder.commentLikeButton!!.setOnLikeListener(object: OnLikeListener {
+                override fun liked(p0: LikeButton?) {
+                    "Liked comment ${id}".toast(convertView.context)
+                }
+
+                override fun unLiked(p0: LikeButton?) {
+                    "Unliked post ${id}".toast(convertView.context)
+                }
+            })
 
 
             return convertView

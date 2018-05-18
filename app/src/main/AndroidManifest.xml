@@ -60,9 +60,7 @@
         <activity android:name=".MainApplication" />
         <activity android:name=".MakeMemeActivity">
         </activity>
-        <activity
-            android:name=".DetailedMemeActivity"
-            android:theme="@style/AppTheme.Dark">
+        <activity android:name=".DetailedMemeActivity">
         </activity>
         <activity android:name=".MakeMemeActivity"></activity>
         <activity

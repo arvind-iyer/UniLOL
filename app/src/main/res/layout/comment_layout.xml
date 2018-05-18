@@ -30,7 +30,8 @@
                     android:gravity="center_vertical"
                     android:text="comment"
                     android:layout_marginTop="3dp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -73,7 +74,14 @@
 
         </RelativeLayout>
 
-
+        <com.like.LikeButton
+            android:id="@+id/comment_like_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:layout_gravity="right"
+            app:icon_size="25dp"
+            app:icon_type="heart" />
 
     </android.support.v7.widget.CardView>
 
