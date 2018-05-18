@@ -22,7 +22,7 @@ import java.util.*
  */
 
 data class Post(
-        val id: String = "",
+        var id: String = "",
         var title: String = "",
         var upvotes: Int = 0,
         val url : String = "",
@@ -66,11 +66,13 @@ class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) 
                         post.upvotes += 1
                         Log.d("like/", "${user.votes.posts}")
                         Log.d("like/", "${post.upvotes}")
+
                     }
 
                     override fun unLiked(p0: LikeButton?) {
                         "Unliked post ${post.id}".toast(itemView.context)
                         user.votes.posts.remove(post.id)
+                        post.upvotes -= 1
                     }
                 })
 
@@ -79,11 +81,13 @@ class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) 
                         likeButton.isLiked = false
                         "Disliked post ${post.id}".toast(itemView.context)
                         user.votes.posts[post.id] = -1
+                        post.upvotes -= 1
                     }
 
                     override fun unLiked(p0: LikeButton?) {
                         "Undisliked post ${post.id}".toast(itemView.context)
                         user.votes.posts.remove(post.id)
+                        post.upvotes += 1
                     }
                 })
             }

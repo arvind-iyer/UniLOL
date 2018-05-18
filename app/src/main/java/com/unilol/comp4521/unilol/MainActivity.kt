@@ -46,7 +46,9 @@ class MainActivity : AppCompatActivity() {
                     if( task.isSuccessful ) {
                         task.result.forEach { q ->
                             println("Title: ${q.get("title")}")
-                            posts.add(q.toObject(Post::class.java))
+                            val post = q.toObject(Post::class.java)
+                            post.id = q.id
+                            posts.add(post)
                         }
 
                         viewManager = LinearLayoutManager(this)
