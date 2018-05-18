@@ -10,12 +10,12 @@ data class Votes(
 )
 
 data class User (
-        val id : String,
-        val username: String,
-        val profilePictureUrl: String,
-        val posts: ArrayList<Post>?,
-        val votes: Votes?,
-        val email: String,
-        val fullName: String
+        val id : String = "",
+        val username: String = "",
+        val profilePictureUrl: String = "",
+        val posts: ArrayList<Post>? = ArrayList<Post>(),
+        val votes: Votes? = null,
+        val email: String = "",
+        val fullName: String = ""
 )
 

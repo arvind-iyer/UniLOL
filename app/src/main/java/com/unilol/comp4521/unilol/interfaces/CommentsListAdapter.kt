@@ -29,8 +29,8 @@ class CommentsListAdapter
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
 
-        val comment = getItem(position)!!.comment
-        val author = getItem(position)!!.author
+        val comment = getItem(position)!!.message
+        val author = getItem(position)!!.user_id
         val upvotes = getItem(position)!!.upvotes.toString() + " upvotes"
         val time = getItem(position)!!.time.toString()
 
