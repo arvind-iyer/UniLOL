@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -67,17 +66,17 @@ class LoginActivity : AppCompatActivity(){
             }
         })
 
-        btn_login.setOnClickListener(View.OnClickListener {
+        btn_login.setOnClickListener({
             view -> loginEmailPassword()
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
         })
 
-        link_forgot_password.setOnClickListener(View.OnClickListener {
+        link_forgot_password.setOnClickListener({
             startActivity(Intent(this, ForgotPasswordActivity::class.java))
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
         })
 
-        link_signup.setOnClickListener(View.OnClickListener {
+        link_signup.setOnClickListener({
             startActivity(Intent(this, RegisterActivity::class.java))
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
         })

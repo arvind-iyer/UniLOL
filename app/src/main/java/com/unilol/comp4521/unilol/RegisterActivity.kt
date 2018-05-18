@@ -3,7 +3,6 @@ package com.unilol.comp4521.unilol
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -28,7 +27,7 @@ class RegisterActivity : AppCompatActivity(){
 
         mDatabase = FirebaseDatabase.getInstance().getReference("Names")
 
-        btn_register.setOnClickListener(View.OnClickListener {
+        btn_register.setOnClickListener({
             view -> registerUser()
         })
 
@@ -130,6 +129,6 @@ class RegisterActivity : AppCompatActivity(){
             input_username.setError(null)
         }
 
-        return valid;
+        return valid
     }
 }

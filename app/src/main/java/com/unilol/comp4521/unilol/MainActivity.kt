@@ -12,10 +12,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
 import com.unilol.comp4521.unilol.interfaces.Post
 import com.unilol.comp4521.unilol.interfaces.PostAdapter
@@ -65,7 +62,7 @@ class MainActivity : AppCompatActivity() {
             })
 
 
-        post_new_meme.setOnClickListener(View.OnClickListener {
+        post_new_meme.setOnClickListener({
             val intent = Intent(this, MakeMemeActivity::class.java)
             startActivityForResult(intent, Activity.RESULT_CANCELED)
         })
@@ -75,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
+        "Select a picture to upload".toast(view.context)
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
     }
 
@@ -94,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                     memeRef.child(memeUUID)
                             .putFile(uri)
                             .addOnSuccessListener { taskSnapshot ->
-                                val downloadUrl = taskSnapshot.downloadUrl
+//                                val downloadUrl = taskSnapshot.downloadUrl
                                 //TODO: Add database entry with this link
 
                             }
@@ -114,12 +112,12 @@ class MainActivity : AppCompatActivity() {
         val memeRef = mStorage.child("images")
         val localFile = File.createTempFile("images", "jpg")
         memeRef.getFile(localFile)
-                .addOnSuccessListener(OnSuccessListener<FileDownloadTask.TaskSnapshot> {
+                .addOnSuccessListener({
                     // Successfully downloaded data to local file
                     // ...
                     val mbp = BitmapFactory.decodeFile(localFile.absolutePath)
                     image_holder.setImageBitmap(mbp)
-                }).addOnFailureListener(OnFailureListener {
+                }).addOnFailureListener({
             // Handle failed download
             // ...
         })

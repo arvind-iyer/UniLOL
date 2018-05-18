@@ -29,7 +29,7 @@ data class Post(
         val timestamp: Date = Date()
 )
 
-public class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) -> Unit):
+class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) -> Unit):
         RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
@@ -106,7 +106,7 @@ public class PostAdapter(private val posts: ArrayList<Post>, val clickListener: 
         holder.title.text = posts[position].title
         Picasso.get().load(posts[position].url).into(holder.imageView)
         holder.upvoteText.text = "${posts[position].upvotes} upvotes"
-        (holder as ViewHolder).bind(posts[position], clickListener)
+        holder.bind(posts[position], clickListener)
     }
 
     override fun getItemCount(): Int = posts.size
