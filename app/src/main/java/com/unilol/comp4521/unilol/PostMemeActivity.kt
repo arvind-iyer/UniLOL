@@ -34,11 +34,10 @@ class PostMemeActivity : AppCompatActivity() {
 
         val imgFile = File(imagePath)
 
-        if (imgFile.exists()) {
-            val myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath())
-            postMeme_imageView.setImageBitmap(myBitmap)
-        }
+        if (!imgFile.exists()) { return }
 
+        val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+        postMeme_imageView.setImageBitmap(myBitmap)
         uploadMemeButton.setOnClickListener {
             uploadMeme()
         }
@@ -77,18 +76,18 @@ class PostMemeActivity : AppCompatActivity() {
     private fun postMeme(memeURL: String) {
         val title = uploadMeme_title.text.toString().trim()
         val description = uploadMeme_description.text.toString().trim()
+        val tags = uploadMeme_tags.text.toString().split(",").map { it.trim() }
         val id: String = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-        // TODO: add tags?
-//        val tags = uploadMeme_tags.text.toString().trim()
 
         val db = FirebaseFirestore.getInstance()
-        val mAuth = FirebaseAuth.getInstance()
         val postObj = HashMap<String, Any>()
 
         postObj.put("time", FieldValue.serverTimestamp())
         postObj.put("title", title)
+        postObj.put("description", description)
         postObj.put("upvotes", 0)
         postObj.put("url", memeURL)
+        postObj.put("tags", tags)
         postObj.put("user_id", id)
 
         db.collection("posts").add(postObj)
