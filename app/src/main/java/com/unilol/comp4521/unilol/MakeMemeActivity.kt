@@ -1,6 +1,5 @@
 package com.unilol.comp4521.unilol
 
-import android.os.Bundle
 import android.widget.Toast
 import android.content.Intent
 import ly.img.android.ui.activities.ImgLyIntent
@@ -19,32 +18,41 @@ import java.io.File
 
 class MakeMemeActivity : Activity(), PermissionRequest.Response {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val tag = "MakeMemeActivity"
+
+    private var imagePath: String? = null
 
     override fun onResume() {
         super.onResume()
-        val settingsList = SettingsList()
 
-        settingsList
-                .getSettingsModel(CameraSettings::class.java)
-                .setExportDir(Directory.DCIM, FOLDER)
-                .setExportPrefix("camera_")
+        if (imagePath == null) {
+            // start camera activity
+            val settingsList = SettingsList()
+            settingsList
+                    .getSettingsModel(CameraSettings::class.java)
+                    .setExportDir(Directory.DCIM, FOLDER)
+                    .setExportPrefix("camera_")
 
-                .getSettingsModel(EditorSaveSettings::class.java)
-                .setExportDir(Directory.DCIM, FOLDER)
-                .setExportPrefix("result_")
-                .setJpegQuality(80, false).savePolicy = EditorSaveSettings.SavePolicy.KEEP_SOURCE_AND_CREATE_ALWAYS_OUTPUT
+                    .getSettingsModel(EditorSaveSettings::class.java)
+                    .setExportDir(Directory.DCIM, FOLDER)
+                    .setExportPrefix("result_")
+                    .setJpegQuality(80, false).savePolicy = EditorSaveSettings.SavePolicy.KEEP_SOURCE_AND_CREATE_OUTPUT_IF_NECESSARY
 
-        CameraPreviewBuilder(this)
-                .setSettingsList(settingsList)
-                .startActivityForResult(this, CAMERA_PREVIEW_RESULT)
+            CameraPreviewBuilder(this)
+                    .setSettingsList(settingsList)
+                    .startActivityForResult(this, CAMERA_PREVIEW_RESULT)
+        } else {
+            // start post activity
+            Log.i(tag, "imagePath: $imagePath")
+            val postIntent = Intent(this, PostMemeActivity::class.java)
+            postIntent.putExtra("imagePath", imagePath)
+            startActivityForResult(postIntent, POST_RESULT)
+        }
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
-        Log.i("Image editor", requestCode.toString() + " " + resultCode + ".")
+        Log.i(tag, requestCode.toString() + " " + resultCode + ".")
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_PREVIEW_RESULT) {
 
@@ -54,20 +62,25 @@ class MakeMemeActivity : Activity(), PermissionRequest.Response {
             if (resultPath != null) {
                 // Add result file to Gallery
                 sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(File(resultPath))))
+                imagePath = resultPath
             }
 
             if (sourcePath != null) {
                 // Add sourceType file to Gallery
                 sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(File(sourcePath))))
+                imagePath = sourcePath
             }
 
             // save image and finish image editor activity
             Toast.makeText(PESDK.getAppContext(), "Image saved on: " + resultPath!!, Toast.LENGTH_LONG).show()
-            // start post activity
+
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == CAMERA_PREVIEW_RESULT && data != null) {
             val sourcePath = data.getStringExtra(ImgLyIntent.SOURCE_IMAGE_PATH)
+            imagePath = null
 //            Toast.makeText(PESDK.getAppContext(), "Editor canceled, sourceType image is:\n$sourcePath", Toast.LENGTH_LONG).show()
+        } else if (resultCode == Activity.RESULT_OK && requestCode == POST_RESULT) {
         } else {
+            imagePath = null
             finish()
         }
     }
@@ -87,13 +100,14 @@ class MakeMemeActivity : Activity(), PermissionRequest.Response {
     }
 
     override fun onBackPressed() {
-        Log.i("image editor", "back pressed")
+        Log.i(tag, "back pressed")
     }
 
     companion object {
 
         private val FOLDER = "ImgLy"
         var CAMERA_PREVIEW_RESULT = 1
+        var POST_RESULT = 2
     }
 }
 
