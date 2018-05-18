@@ -5,15 +5,16 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detailed_meme.*
-import java.util.ArrayList
 import android.util.Log
 import android.view.View
 import android.widget.*
 import com.ceylonlabs.imageviewpopup.ImagePopup
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.HashMap
+import java.util.*
+import com.unilol.comp4521.unilol.interfaces.Comment
+import com.unilol.comp4521.unilol.interfaces.CommentsListAdapter
+import com.unilol.comp4521.unilol.interfaces.User
 
 
 class DetailedMemeActivity: AppCompatActivity() {
@@ -27,7 +28,6 @@ class DetailedMemeActivity: AppCompatActivity() {
 
     private var comments: ArrayList<Comment>? = null
     private var mProgressBar: ProgressBar? = null
-    private var progressText: TextView? = null
     private var mListView: ListView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,19 +82,18 @@ class DetailedMemeActivity: AppCompatActivity() {
         requestComments.get().addOnCompleteListener({ task ->
                     if( task.isSuccessful ) {
                         mListView = findViewById(R.id.comments_list_view) as ListView
-                        for (document in task.result) {
-                            val commentObj = document.data
-
+                        val commentObjects = task.result.toObjects(Comment::class.java)
+                        for (comment in commentObjects) {
                             // Create another request to extract the username
-                            val requestUsername = db.collection("users").document(commentObj.getValue("user_id").toString())
-                            requestUsername.get().addOnCompleteListener({task ->
-                                if(task.isSuccessful) {
-                                    val userObj = task.result.data
+                            val requestUsername = db.collection("users").document(comment.user_id.toString())
+                            requestUsername.get().addOnCompleteListener({task_inner ->
+                                if(task_inner.isSuccessful) {
+                                    val userObj = task_inner.result.toObject(User::class.java)
                                     comments!!.add(Comment(
-                                            commentObj.getValue("message").toString(),
-                                            userObj!!.getValue("username").toString(),
-                                            commentObj.getValue("upvotes").toString().toInt(),
-                                            commentObj.getValue("time").toString()
+                                            comment.message,
+                                            userObj!!.username,
+                                            comment.upvotes,
+                                            comment.time
                                     ))
                                     val adapter = CommentsListAdapter(this@DetailedMemeActivity, R.layout.comment_layout, comments!!)
 
@@ -135,14 +134,10 @@ class DetailedMemeActivity: AppCompatActivity() {
         btnPostComment.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
             val mAuth = FirebaseAuth.getInstance()
-            val commentObj = HashMap<String, Any>()
-            commentObj.put("message", comment.text.toString())
-            commentObj.put("time", FieldValue.serverTimestamp())
-            commentObj.put("upvotes", 0)
-            commentObj.put("user_id", mAuth.currentUser?.uid!!)
 
+            val newComment = Comment(comment.text.toString(), mAuth.currentUser?.uid!!, 0, Date())
             db.collection("posts").document(postId!!).collection("comments")
-                    .add(commentObj)
+                    .add(newComment)
                     .addOnSuccessListener {
                         Toast.makeText(applicationContext, "Post comment success!", Toast.LENGTH_SHORT).show()
                         displayComments()

@@ -12,8 +12,8 @@ import kotlinx.android.synthetic.main.activity_register.*
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.UserProfileChangeRequest
-
-
+import com.unilol.comp4521.unilol.interfaces.Post
+import com.unilol.comp4521.unilol.interfaces.User
 
 
 /**
@@ -52,18 +52,17 @@ class RegisterActivity : AppCompatActivity(){
 
                             // Sign in success, update UI with the signed-in user's information
                             val firestore = FirebaseFirestore.getInstance()
-                            val userObj = HashMap<String, String>()
-                            userObj.put("fullName", fullName)
-                            userObj.put("username", username)
-                            userObj.put("email", email)
-                            // Put a standard profile picture for every new user
-                            userObj.put("profilePictureURL", "https://firebasestorage.googleapis.com/" +
-                                    "v0/b/unilol-e3a9e.appspot.com/o/images%2Fduck.jpeg" +
-                                    "?alt=media&token=3872ff68-084e-47b6-b289-a68106cd1346")
+                            val currentUser = mAuth.currentUser
 
-                            firestore.collection("users")
-                                    .document(mAuth.currentUser?.uid!!)
-                                    .set(userObj as Map<String, String>)
+                            val newUser = User(currentUser!!.uid, username,
+                                    "https://firebasestorage.googleapis.com/v0/b/" +
+                                            "unilol-e3a9e.appspot.com/o/images%2Fduck.jpeg",
+                                    ArrayList<Post>(),
+                                    null,
+                                    email,
+                                    fullName)
+
+                            firestore.collection("users").document(currentUser.uid).set(newUser)
 
                             val user = mAuth.currentUser
 
