@@ -6,14 +6,13 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_register.*
-import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.auth.UserProfileChangeRequest
-import com.unilol.comp4521.unilol.interfaces.Post
 import com.unilol.comp4521.unilol.interfaces.User
+import kotlinx.android.synthetic.main.activity_register.*
 
 
 /**
@@ -54,13 +53,13 @@ class RegisterActivity : AppCompatActivity(){
                             val firestore = FirebaseFirestore.getInstance()
                             val currentUser = mAuth.currentUser
 
-                            val newUser = User(currentUser!!.uid, username,
-                                    "https://firebasestorage.googleapis.com/v0/b/" +
+                            val newUser = User(
+                                    id=currentUser!!.uid,
+                                    username = username,
+                                    profilePictureUrl = "https://firebasestorage.googleapis.com/v0/b/" +
                                             "unilol-e3a9e.appspot.com/o/images%2Fduck.jpeg",
-                                    ArrayList<Post>(),
-                                    null,
-                                    email,
-                                    fullName)
+                                    email=email,
+                                    fullName=fullName)
 
                             firestore.collection("users").document(currentUser.uid).set(newUser)
 

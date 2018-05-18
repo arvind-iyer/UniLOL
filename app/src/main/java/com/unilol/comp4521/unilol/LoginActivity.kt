@@ -6,18 +6,17 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
-import kotlinx.android.synthetic.main.activity_login.*
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginResult
-import com.facebook.FacebookCallback
-import com.facebook.CallbackManager
-import com.facebook.AccessToken
 import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.firestore.FirebaseFirestore
-import com.unilol.comp4521.unilol.interfaces.Post
 import com.unilol.comp4521.unilol.interfaces.User
+import kotlinx.android.synthetic.main.activity_login.*
 
 
 /**
@@ -131,12 +130,12 @@ class LoginActivity : AppCompatActivity(){
 
                         if(task.result.additionalUserInfo.isNewUser) {
                             // Create a new document on "users" collection on DB if it is a new user
-                            val newUser = User(currentUser.uid, displayName!!,
-                                    currentUser.photoUrl.toString(),
-                                    ArrayList<Post>(),
-                                    null,
-                                    currentUser.email!!,
-                                    displayName)
+                            val newUser = User(
+                                    id=currentUser.uid,
+                                    username = displayName!!,
+                                    profilePictureUrl = currentUser.photoUrl.toString(),
+                                    email = currentUser.email!!,
+                                    fullName = displayName)
 
                             firestore.collection("users").document(currentUser.uid).set(newUser)
                         }

@@ -5,17 +5,17 @@ package com.unilol.comp4521.unilol.interfaces
  */
 
 data class Votes(
-        val posts: Map<String, Int>,
-        val comments: Map<String, Int>
+        val posts : HashMap<String, Int> = HashMap<String, Int>(),
+        val comments: HashMap<String, Int> = HashMap<String, Int>()
 )
 
 data class User (
-        val id : String = "",
-        val username: String = "",
-        val profilePictureUrl: String = "",
+        var id : String = "",
+        var username: String = "",
+        var profilePictureUrl: String = "",
+        var email: String = "",
+        var fullName: String = "",
         val posts: ArrayList<Post>? = ArrayList<Post>(),
-        val votes: Votes? = null,
-        val email: String = "",
-        val fullName: String = ""
+        val votes: Votes = Votes()
 )
 

@@ -1,19 +1,21 @@
 package com.unilol.comp4521.unilol
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.google.android.gms.tasks.OnFailureListener
-import com.google.firebase.storage.FileDownloadTask
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
 import com.unilol.comp4521.unilol.interfaces.Post
 import com.unilol.comp4521.unilol.interfaces.PostAdapter
@@ -23,6 +25,9 @@ import java.io.IOException
 import java.lang.Exception
 import java.util.*
 
+fun Any.toast(context: Context, duration: Int = Toast.LENGTH_SHORT) : Toast {
+    return Toast.makeText(context, this.toString(), duration).apply { show() }
+}
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
@@ -48,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         viewManager = LinearLayoutManager(this)
-                        viewAdapter = PostAdapter(posts, { post : Post -> postItemClicked(post) })
+                        viewAdapter = PostAdapter(posts, { post: Post -> postItemClicked(post) })
                         recyclerView = memes_recycler.apply {
                             setHasFixedSize(true)
                             layoutManager = viewManager
