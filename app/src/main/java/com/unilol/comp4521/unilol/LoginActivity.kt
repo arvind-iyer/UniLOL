@@ -36,9 +36,6 @@ class LoginActivity : AppCompatActivity(){
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
-            // Signout for demo purpose, for now every user must pass the LoginActivity
-//            mAuth.signOut()
-
             // Skip login page if user already exists in Firebase instance
             startActivity(Intent(this, MainActivity::class.java).putExtra("user", currentUser))
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
