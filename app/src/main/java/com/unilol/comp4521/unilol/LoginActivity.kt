@@ -30,13 +30,16 @@ class LoginActivity : AppCompatActivity(){
     // Firebase Auth
     lateinit var mAuth: FirebaseAuth
 
-    public override fun onStart() {
+    override fun onStart() {
         super.onStart()
         mAuth = FirebaseAuth.getInstance()
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = mAuth.currentUser
+
         if (currentUser != null) {
             // Skip login page if user already exists in Firebase instance
+            Toast.makeText(this@LoginActivity, "Succesfully logged in, Welcome ${currentUser.displayName} !",
+                    Toast.LENGTH_LONG).show()
             startActivity(Intent(this, MainActivity::class.java).putExtra("user", currentUser))
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
         }
