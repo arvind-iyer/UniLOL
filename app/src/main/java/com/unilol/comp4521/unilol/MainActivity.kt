@@ -6,14 +6,20 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.design.widget.NavigationView
+import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
+import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.unilol.comp4521.unilol.interfaces.Post
@@ -37,32 +43,80 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager : RecyclerView.LayoutManager
     private val mDB = FirebaseFirestore.getInstance()
+    private val mAuth = FirebaseAuth.getInstance()
     private val posts = ArrayList<Post>()
+
+    private lateinit var mDrawerLayout: DrawerLayout
+
+    private val mSwipeRefreshLayout: SwipeRefreshLayout by lazy {
+        findViewById(R.id.swiperefresh) as SwipeRefreshLayout
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Toolbar and actionbar stuff
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        val actionbar: ActionBar? = supportActionBar
+        actionbar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_menu)
+        }
+        mDrawerLayout = findViewById(R.id.drawer_layout)
+        val navigationView: NavigationView = findViewById(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            // set item as selected to persist highlight
+            menuItem.isChecked = true
+
+            when(menuItem.itemId){
+                R.id.my_profile -> "GO TO MY PROFILE".toast(this, 1)
+                R.id.logout-> {
+                    mAuth.signOut()
+                    "Signed out".toast(this, 2)
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+                }
+            }
+
+            // close drawer when item is tapped
+            mDrawerLayout.closeDrawers()
+            // Add code here to update the UI based on the item selected
+            // For example, swap UI fragments here
+            true
+        }
+
+        // Swiperefrastesh
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.primary)
+        mSwipeRefreshLayout.setOnRefreshListener(
+                SwipeRefreshLayout.OnRefreshListener {
+                   loadPosts()
+                    mSwipeRefreshLayout.isRefreshing = false
+                }
+        )
+
+        // Load all the memes upon Activity creation
         loadPosts()
+
         post_new_meme.setOnClickListener({
             val intent = Intent(this, MakeMemeActivity::class.java)
             startActivityForResult(intent, Activity.RESULT_CANCELED)
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_main, menu)
-        return true
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                mDrawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId){
-        R.id.menu_refresh ->
-        {
-            loadPosts()
-            true
-        }
-        else -> true
-    }
+
     fun loadPosts() {
         posts.clear()
         mDB.collection("posts")
@@ -126,6 +180,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 
     fun downloadMeme(view: View) {
 

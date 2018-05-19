@@ -77,8 +77,6 @@
 
         </RelativeLayout>
 
-
-
         <ProgressBar
             style="?android:attr/progressBarStyle"
             android:layout_width="100dp"
