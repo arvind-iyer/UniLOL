@@ -97,7 +97,8 @@
                 android:layout_height="50dp"
                 android:id="@+id/comment_progressbar"
                 android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true"
+                android:indeterminateTint="@color/primary"/>
 
         </RelativeLayout>
 

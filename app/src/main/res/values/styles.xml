@@ -24,6 +24,13 @@
         <item name="android:colorButtonNormal">@color/primary_darker</item>
     </style>
 
+    <style name="AppTheme.Light" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
+
+
     <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
         <item name="colorAccent">@color/white</item>
         <item name="android:textColorPrimary">@color/iron</item>

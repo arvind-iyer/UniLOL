@@ -29,6 +29,7 @@
                 android:layout_height="40dp"
                 android:id="@+id/btn_post_reply"
                 android:textAlignment="center"
+                android:textColor="@color/black"
                 android:text="reply"
                 android:textSize="12sp"
                 android:layout_alignParentRight="true"
@@ -83,7 +84,8 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:id="@+id/comments_loading_progressbar"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@color/primary"/>
 
         <ListView
             android:layout_width="match_parent"

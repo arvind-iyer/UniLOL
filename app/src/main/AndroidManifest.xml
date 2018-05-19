@@ -29,7 +29,8 @@
         <activity
             android:name=".RegisterActivity"
             android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,7 +61,8 @@
         <activity android:name=".MainApplication" />
         <activity android:name=".MakeMemeActivity">
         </activity>
-        <activity android:name=".DetailedMemeActivity">
+        <activity android:name=".DetailedMemeActivity"
+            android:theme="@style/AppTheme.Light">
         </activity>
         <activity android:name=".MakeMemeActivity"></activity>
         <activity
