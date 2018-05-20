@@ -2,6 +2,7 @@ package com.unilol.comp4521.unilol
 
 import android.app.Dialog
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -18,6 +19,8 @@ import java.util.*
 import com.unilol.comp4521.unilol.interfaces.Comment
 import com.unilol.comp4521.unilol.interfaces.CommentsListAdapter
 import com.unilol.comp4521.unilol.interfaces.User
+import org.ocpsoft.prettytime.PrettyTime
+import kotlin.collections.ArrayList
 
 
 class DetailedMemeActivity: AppCompatActivity() {
@@ -26,8 +29,11 @@ class DetailedMemeActivity: AppCompatActivity() {
     private var postId: String? = null
     private var postURL: String? = null
     private var postTitle: String? = null
+    private var postDescription: String? = null
     private var postUserId: String? = null
     private var postUpvotes: Int? = null
+    private var postTags: ArrayList<String>? = ArrayList()
+    private var postTime: Date? = Date()
 
     private var comments: ArrayList<Comment>? = null
     private var mProgressBar: ProgressBar? = null
@@ -39,7 +45,7 @@ class DetailedMemeActivity: AppCompatActivity() {
 
         mProgressBar = findViewById(R.id.comments_loading_progressbar) as ProgressBar
 
-        val btnReply = findViewById(R.id.btn_post_reply) as Button
+        val btnReply = findViewById(R.id.btn_post_reply) as FloatingActionButton
 
         btnReply.setOnClickListener {
             postUserComment()
@@ -73,10 +79,14 @@ class DetailedMemeActivity: AppCompatActivity() {
         postId = incomingIntent.getStringExtra("@string/post_id")
         postURL = incomingIntent.getStringExtra("@string/post_url")
         postTitle = incomingIntent.getStringExtra("@string/post_title")
+        postDescription = incomingIntent.getStringExtra("@string/post_description")
         postUserId = incomingIntent.getStringExtra("@string/post_user_id")
         postUpvotes = incomingIntent.getIntExtra("@int/post_upvotes", 0)
+        postTags = incomingIntent.getStringArrayListExtra("@stringArray/post_tags")
+        postTime!!.setTime(incomingIntent.getLongExtra("@date/post_time", -1));
 
         // Toolbar and actionbar stuff --> places an actionbar with a back button
+
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         val actionbar: ActionBar? = supportActionBar
@@ -88,9 +98,12 @@ class DetailedMemeActivity: AppCompatActivity() {
 
     private fun setMemeInformation(){
         // Set meme information above all the comments
-        post_title.setText(postTitle)
+        post_description.setText(postDescription)
         post_author.setText(postUserId)
         post_upvotes.setText("${postUpvotes.toString()} upvotes")
+        post_tags.setText("Tag(s): ${postTags!!.joinToString()}")
+        post_time.setText(PrettyTime().format(postTime))
+
         Picasso.get().load(postURL).into(post_thumbnail)
         val imagePopup = ImagePopup(this);
         imagePopup.setImageOnClickClose(true);  // Optional

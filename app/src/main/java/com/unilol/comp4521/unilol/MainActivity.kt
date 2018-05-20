@@ -209,8 +209,11 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this@MainActivity, DetailedMemeActivity::class.java)
                 intent.putExtra("@string/post_id", post.id)
                 intent.putExtra("@string/post_url", post.url)
+                intent.putExtra("@stringArray/post_tags", post.tags)
                 intent.putExtra("@int/post_upvotes", post.upvotes)
+                intent.putExtra("@date/post_time", post.timestamp.time)
                 intent.putExtra("@string/post_title", post.title)
+                intent.putExtra("@string/post_description", post.description)
                 intent.putExtra("@string/post_user_id", userObj!!.getValue("username").toString())
                 startActivity(intent)
             }

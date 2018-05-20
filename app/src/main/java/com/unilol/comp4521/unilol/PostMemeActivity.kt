@@ -1,5 +1,6 @@
 package com.unilol.comp4521.unilol
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -92,7 +93,7 @@ class PostMemeActivity : AppCompatActivity() {
         db.collection("posts").add(newPost)
             .addOnSuccessListener {
                 addPostToUser(it.id)
-                this.finish()
+                startActivity(Intent(this, MainActivity::class.java))
             }.addOnFailureListener {
                 Toast.makeText(this, "Post meme failed. $it.message",
                         Toast.LENGTH_SHORT).show()
