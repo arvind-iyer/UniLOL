@@ -5,19 +5,16 @@ import android.os.Bundle
 import android.util.Log
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.support.annotation.NonNull
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_post_meme.*
 import java.io.File
-import com.google.firebase.storage.UploadTask
 import android.widget.Toast
-import com.google.android.gms.tasks.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.unilol.comp4521.unilol.interfaces.Post
+import com.unilol.comp4521.unilol.interfaces.User
 import java.util.*
+import kotlin.collections.ArrayList
 
 class PostMemeActivity : AppCompatActivity() {
 
@@ -73,31 +70,63 @@ class PostMemeActivity : AppCompatActivity() {
         })
     }
 
+
     private fun postMeme(memeURL: String) {
         val title = uploadMeme_title.text.toString().trim()
         val description = uploadMeme_description.text.toString().trim()
-        val tags = uploadMeme_tags.text.toString().split(",").map { it.trim() }
+        val tags = ArrayList(uploadMeme_tags.text.toString().split(",").map { it.trim() })
         val id: String = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
         val db = FirebaseFirestore.getInstance()
-        val postObj = HashMap<String, Any>()
 
-        postObj.put("time", FieldValue.serverTimestamp())
-        postObj.put("title", title)
-        postObj.put("description", description)
-        postObj.put("upvotes", 0)
-        postObj.put("url", memeURL)
-        postObj.put("tags", tags)
-        postObj.put("user_id", id)
+        val newPost = Post(
+                title = title,
+                upvotes = 0,
+                url = memeURL,
+                user_id = id,
+                timestamp = Date(),
+                description = description,
+                tags = tags
+        )
 
-        db.collection("posts").add(postObj)
+        db.collection("posts").add(newPost)
             .addOnSuccessListener {
-                Toast.makeText(this, "Post meme succeeded!",
-                        Toast.LENGTH_SHORT).show()
+                addPostToUser(it.id)
                 this.finish()
             }.addOnFailureListener {
                 Toast.makeText(this, "Post meme failed. $it.message",
                         Toast.LENGTH_SHORT).show()
             }
+    }
+
+
+    private fun addPostToUser(postId: String){
+        val db = FirebaseFirestore.getInstance()
+        val userId: String = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        val requestUser = db.collection("users").document(userId)
+
+        requestUser.get().addOnCompleteListener({task->
+            if(task.isSuccessful){
+                val user = task.result.toObject(User::class.java)
+                val userPosts = user!!.posts
+                userPosts!!.add(postId) // Add the new post
+
+                // Update to database
+                requestUser.update("posts", userPosts).addOnCompleteListener({task_inner->
+                    if(task_inner.isSuccessful){
+                        Toast.makeText(this, "Post meme succeeded!",
+                                Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        task_inner.exception!!.toast(this, 2)
+                    }
+                })
+
+            }
+            else{
+                Toast.makeText(this, "Fail getting information",
+                        Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

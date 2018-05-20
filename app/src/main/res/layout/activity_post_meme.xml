@@ -10,11 +10,22 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
+            android:text="Post New Meme"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
         <ImageView
             android:id="@+id/postMeme_imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
             android:adjustViewBounds="false"
             android:scaleType="centerCrop"
             app:srcCompat="@color/cardview_shadow_end_color" />

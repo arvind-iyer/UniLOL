@@ -1,7 +1,6 @@
 package com.unilol.comp4521.unilol
 
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
@@ -76,7 +75,8 @@ class DetailedMemeActivity: AppCompatActivity() {
         postTitle = incomingIntent.getStringExtra("@string/post_title")
         postUserId = incomingIntent.getStringExtra("@string/post_user_id")
         postUpvotes = incomingIntent.getIntExtra("@int/post_upvotes", 0)
-        // Toolbar and actionbar stuff
+
+        // Toolbar and actionbar stuff --> places an actionbar with a back button
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         val actionbar: ActionBar? = supportActionBar

@@ -26,7 +26,9 @@ data class Post(
         var upvotes: Int = 0,
         val url : String = "",
         val user_id : String = "",
-        val timestamp: Date = Date()
+        val timestamp: Date = Date(),
+        val description: String  = "",
+        val tags: ArrayList<String> = ArrayList()
 )
 
 class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) -> Unit):
