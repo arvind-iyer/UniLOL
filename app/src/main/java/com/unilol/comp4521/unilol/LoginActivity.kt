@@ -38,10 +38,10 @@ class LoginActivity : AppCompatActivity(){
 
         if (currentUser != null) {
             // Skip login page if user already exists in Firebase instance
-            Toast.makeText(this@LoginActivity, "Succesfully logged in, Welcome ${currentUser.displayName} !",
+            Toast.makeText(this@LoginActivity, "Succesfully logged in, welcome ${currentUser.displayName} !",
                     Toast.LENGTH_LONG).show()
-            startActivity(Intent(this, MainActivity::class.java).putExtra("user", currentUser))
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+            startActivity(Intent(this, MainActivity::class.java).putExtra("user", currentUser))
         }
 
     }
@@ -70,7 +70,7 @@ class LoginActivity : AppCompatActivity(){
         })
 
         btn_login.setOnClickListener({
-            view -> loginEmailPassword()
+            _ -> loginEmailPassword()
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
         })
 
@@ -103,7 +103,7 @@ class LoginActivity : AppCompatActivity(){
                     .addOnCompleteListener ( this, {task ->
                 if (task.isSuccessful) {
                     val user = mAuth.currentUser
-                    Toast.makeText(this, "Successfully Logged in, welcome ${user!!.email}!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Succesfully logged in, welcome ${user!!.displayName} !", Toast.LENGTH_LONG).show()
                     startActivity(Intent(this, MainActivity::class.java).putExtra("user", user))
                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                 } else {
@@ -142,14 +142,14 @@ class LoginActivity : AppCompatActivity(){
                             firestore.collection("users").document(currentUser.uid).set(newUser)
                         }
 
-                        Toast.makeText(this@LoginActivity, "Succesfully logged in using Facebook, Welcome ${displayName} !",
+                        Toast.makeText(this@LoginActivity, "Succesfully logged in, welcome ${displayName} !",
                                 Toast.LENGTH_LONG).show()
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java).putExtra("user", currentUser))
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                     } else {
-                        // If sign in fails, display a message rto the user.
+                        // If sign in fails, display a message to the user.
                         Log.w(TAG, "Sign in with Facebook failure", task.getException())
-                        Toast.makeText(this@LoginActivity, "Authentication failed.",
+                        Toast.makeText(this@LoginActivity, "Authentication failed",
                                 Toast.LENGTH_SHORT).show()
                     }
                 }

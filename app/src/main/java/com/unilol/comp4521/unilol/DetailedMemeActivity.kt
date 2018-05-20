@@ -1,11 +1,15 @@
 package com.unilol.comp4521.unilol
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detailed_meme.*
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import com.ceylonlabs.imageviewpopup.ImagePopup
@@ -50,6 +54,20 @@ class DetailedMemeActivity: AppCompatActivity() {
     }
 
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // When user presses back button, go back to previous MainActivity
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
+
     private fun getMemeInformation(){
         // Store all data coming from the intent from MainActivity
         val incomingIntent = intent
@@ -58,6 +76,14 @@ class DetailedMemeActivity: AppCompatActivity() {
         postTitle = incomingIntent.getStringExtra("@string/post_title")
         postUserId = incomingIntent.getStringExtra("@string/post_user_id")
         postUpvotes = incomingIntent.getIntExtra("@int/post_upvotes", 0)
+        // Toolbar and actionbar stuff
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        val actionbar: ActionBar? = supportActionBar
+        actionbar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+        }
+        actionbar!!.title = postTitle
     }
 
     private fun setMemeInformation(){
