@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
+import com.unilol.comp4521.unilol.interfaces.Comment
 import com.unilol.comp4521.unilol.interfaces.Post
 import com.unilol.comp4521.unilol.interfaces.PostAdapter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -129,7 +130,9 @@ class MainActivity : AppCompatActivity() {
                         val post = q.toObject(Post::class.java)
                         post.id = q.id
                         posts.add(post)
+
                     }
+
 
                     viewManager = LinearLayoutManager(this)
                     viewAdapter = PostAdapter(posts, { post: Post -> postItemClicked(post) })
@@ -137,6 +140,20 @@ class MainActivity : AppCompatActivity() {
                         setHasFixedSize(true)
                         layoutManager = viewManager
                         adapter = viewAdapter
+                    }
+                    //Get comments
+                    posts.forEach { post ->
+                        mDB.collection("posts").document(post.id)
+                                .collection("comments").get()
+                        .addOnCompleteListener({ subtask ->
+                            if (subtask.isSuccessful) {
+                                post.comments = ArrayList<Comment>()
+                                subtask.result.forEach {comment ->
+                                    post.comments?.add(comment.toObject(Comment::class.java))
+                                }
+                            }
+                            viewAdapter.notifyDataSetChanged()
+                        })
                     }
 
 

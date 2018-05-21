@@ -15,6 +15,7 @@ import com.like.OnLikeListener
 import com.squareup.picasso.Picasso
 import com.unilol.comp4521.unilol.R
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by arvind on 1/5/18.
@@ -28,7 +29,8 @@ data class Post(
         val user_id : String = "",
         val timestamp: Date = Date(),
         val description: String  = "",
-        val tags: ArrayList<String> = ArrayList()
+        val tags: ArrayList<String> = ArrayList(),
+        var comments: ArrayList<Comment>? = null
 )
 
 class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) -> Unit):
@@ -36,6 +38,7 @@ class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) 
 
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
         val title = itemView.findViewById(R.id.post_title) as TextView
+        val commentCount = itemView.findViewById<TextView>(R.id.comment_count)
         val imageView = itemView.findViewById(R.id.thumbnail) as ImageView
         val upvoteText = itemView.findViewById(R.id.count) as TextView
         val likeButton = itemView.findViewById<LikeButton>(R.id.upvote_button)
@@ -122,7 +125,14 @@ class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) 
                 clickListener(post)
             }
 
+            title.isSelected = true
 
+            if(post.comments?.size == 1) {
+                commentCount.text = "1 comment"
+            }
+            else if(post.comments != null){
+                commentCount.text = "${post.comments?.size} comments"
+            }
         }
     }
 
@@ -136,6 +146,7 @@ class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) 
         holder.title.text = posts[position].title
         Picasso.get().load(posts[position].url).into(holder.imageView)
         holder.upvoteText.text = "${posts[position].upvotes} upvotes"
+
         holder.bind(posts[position], clickListener)
     }
 

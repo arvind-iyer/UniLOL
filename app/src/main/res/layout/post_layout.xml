@@ -19,34 +19,52 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/post_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:paddingLeft="@dimen/meme_title_padding"
+                android:paddingRight="@dimen/meme_title_padding"
+                android:paddingTop="@dimen/meme_title_padding"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
+                android:singleLine="true"
+                android:scrollHorizontally="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:ellipsize="marquee"/>
+
             <ImageView
                 android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/meme_cover_height"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
+                android:layout_below="@id/post_title"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:scaleType="fitXY" />
 
-            <TextView
-                android:id="@+id/post_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:layout_below="@id/thumbnail"
-                android:paddingLeft="@dimen/meme_title_padding"
-                android:paddingRight="@dimen/meme_title_padding"
-                android:paddingTop="@dimen/meme_title_padding"
-                android:textColor="@color/post_title"
-                android:textSize="@dimen/meme_title" />
 
+
+            <TextView
+                android:id="@+id/comment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No comments"
+                android:textAlignment="textStart"
+                android:layout_below="@id/thumbnail"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:textSize="12dp"
+                />
             <TextView
                 android:id="@+id/count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
-                android:layout_below="@id/post_title"
+                android:layout_below="@id/thumbnail"
+                android:paddingTop="10dp"
                 android:paddingBottom="@dimen/songs_count_padding_bottom"
                 android:paddingLeft="@dimen/meme_title_padding"
                 android:paddingRight="@dimen/meme_title_padding"
@@ -59,6 +77,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/count"/>
+            <!--<ImageButton-->
+                <!--android:id="@+id/comment_icon"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/ic_comment"-->
+                <!--android:layout_below="@id/count"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_alignBottom="@id/upvote_button"-->
+                <!--android:backgroundTint="@color/white"/>-->
+
+
             <com.like.LikeButton
                 app:icon_type="thumb"
                 app:icon_size="25dp"
