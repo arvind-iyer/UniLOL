@@ -52,6 +52,14 @@ class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) 
 
             }
 
+            fun updateUser() {
+                val userRef = FirebaseFirestore.getInstance()
+                        .collection("users")
+                        .document(user.id)
+                userRef.set(user)
+
+            }
+
             override fun liked(p0: LikeButton?) {
                 if(vote == 1) {
                     if(dislikeButton.isLiked) {
@@ -71,12 +79,14 @@ class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) 
                 Log.d("like/", "${post.upvotes}")
                 // update database
                 updatePost()
+                updateUser()
             }
 
             override fun unLiked(p0: LikeButton?) {
                 user.votes.posts.remove(post.id)
                 post.upvotes -= vote
                 updatePost()
+                updateUser()
             }
         }}
 
@@ -88,11 +98,16 @@ class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) 
                     .whereEqualTo("id", currentUser.uid).get()
             userRef.addOnCompleteListener {
                 if(it.isSuccessful) {
-                    it.result.forEach { u : QueryDocumentSnapshot ->
+                    it.result.take(1).forEach { u : QueryDocumentSnapshot ->
                         user = u.toObject(User::class.java)
                         user.id = u.id
                         Log.d("user/", u.id)
                     }
+                }
+                when(user.votes.posts[post.id]) {
+                    1 -> likeButton.isLiked = true
+                    -1 -> dislikeButton.isLiked = true
+                    else -> likeButton.isLiked = false
                 }
 
                 likeButton.setOnLikeListener(likeListener(user,post,1))

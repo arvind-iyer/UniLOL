@@ -21,6 +21,7 @@ import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.unilol.comp4521.unilol.interfaces.Post
 import com.unilol.comp4521.unilol.interfaces.PostAdapter
@@ -119,7 +120,7 @@ class MainActivity : AppCompatActivity() {
 
     fun loadPosts() {
         posts.clear()
-        mDB.collection("posts")
+        mDB.collection("posts").orderBy("upvotes", Query.Direction.DESCENDING)
             .get()
             .addOnCompleteListener({ task ->
                 if( task.isSuccessful ) {
