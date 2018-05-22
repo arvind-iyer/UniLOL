@@ -73,7 +73,10 @@ class MainActivity : AppCompatActivity() {
             menuItem.isChecked = true
 
             when(menuItem.itemId){
-                R.id.my_profile -> "GO TO MY PROFILE".toast(this, 1)
+                R.id.my_profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+                }
                 R.id.logout-> {
                     mAuth.signOut()
                     "Signed out".toast(this, 2)

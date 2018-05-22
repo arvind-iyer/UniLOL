@@ -55,7 +55,7 @@ dependencies {
     implementation 'com.github.chathuralakmal:AndroidImagePopup:1.2.1'
     implementation 'com.github.jd-alexander:LikeButton:0.2.3'
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
-
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
 }
 
 
