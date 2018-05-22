@@ -1,19 +1,19 @@
 package com.unilol.comp4521.unilol.interfaces
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.like.LikeButton
 import com.like.OnLikeListener
 import com.squareup.picasso.Picasso
+import com.unilol.comp4521.unilol.DetailedMemeActivity
+import com.unilol.comp4521.unilol.ProfileActivity
 import com.unilol.comp4521.unilol.R
 import org.ocpsoft.prettytime.PrettyTime
 import java.util.ArrayList
@@ -91,6 +91,13 @@ class CommentsListAdapter
                     val user = task.result.toObject(User::class.java)
                     Picasso.get().load(user!!.profilePictureUrl).into(holder.commentProfilePicture)
                     holder.author!!.setText(user.username)
+
+                    // On click listener here to go the user profile
+                    holder.commentProfilePicture!!.setOnClickListener {
+                        val intent = Intent(context, ProfileActivity::class.java)
+                        intent.putExtra("@string/user_id", user.id)
+                        context.startActivity(intent)
+                    }
                 }
                 else{
                     Log.d(TAG, "Error collecting comment user! ${task.exception}")

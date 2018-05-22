@@ -203,19 +203,27 @@
                 android:padding="20dp">
 
                 <TextView
-                    android:id="@+id/profileSchool"
+                    android:id="@+id/profileFullName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="HKUST"
+                    android:text="Full name"
+                    android:layout_marginBottom="5dp"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/profileSchool"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="HKUST"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <TextView
                     android:id="@+id/profileStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:text="UniLOL is good"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
@@ -224,7 +232,6 @@
                     android:id="@+id/profileEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:text="budiryan.xyz"
                     android:textColor="@color/link_blue"
                     android:textSize="16sp" />
@@ -254,6 +261,21 @@
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
+
+    <!--For back button on the action bar-->
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+    </FrameLayout>
 
 </merge>
 

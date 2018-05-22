@@ -1,6 +1,7 @@
 package com.unilol.comp4521.unilol
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.ActionBar
@@ -63,7 +64,7 @@ class DetailedMemeActivity: AppCompatActivity() {
         // When user presses back button, go back to previous MainActivity
         return when (item.itemId) {
             android.R.id.home -> {
-                finish()
+                startActivity(Intent(this, MainActivity::class.java))
                 true
             }
             else -> {
@@ -86,7 +87,6 @@ class DetailedMemeActivity: AppCompatActivity() {
         postTime!!.setTime(incomingIntent.getLongExtra("@date/post_time", -1));
 
         // Toolbar and actionbar stuff --> places an actionbar with a back button
-
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         val actionbar: ActionBar? = supportActionBar

@@ -27,17 +27,6 @@
                 android:layout_marginTop="10dp"
                 android:scaleType="centerCrop" />
 
-            <!--<Button-->
-            <!--android:layout_width="90dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:id="@+id/btn_post_reply"-->
-            <!--android:textAlignment="center"-->
-            <!--android:textColor="@color/black"-->
-            <!--android:text="reply"-->
-            <!--android:textSize="12sp"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_alignBottom="@+id/post_thumbnail"-->
-            <!--android:layout_marginRight="10dp"/>-->
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -128,7 +117,7 @@
 
     </RelativeLayout>
 
-    <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
+    <!--For back button on the action bar-->
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"

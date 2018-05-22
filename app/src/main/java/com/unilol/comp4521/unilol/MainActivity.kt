@@ -69,8 +69,6 @@ class MainActivity : AppCompatActivity() {
         mDrawerLayout = findViewById(R.id.drawer_layout)
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener { menuItem ->
-            // set item as selected to persist highlight
-            menuItem.isChecked = true
 
             when(menuItem.itemId){
                 R.id.my_profile -> {
