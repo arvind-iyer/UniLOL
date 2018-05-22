@@ -64,7 +64,8 @@
         <activity
             android:name=".PostMemeActivity"
             android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity"
+            android:theme="@style/AppTheme.Light" />
     </application>
 
 </manifest>

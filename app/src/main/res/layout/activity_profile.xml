@@ -10,18 +10,19 @@
         <RelativeLayout
             android:id="@+id/relLayout1"
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="56dp">
 
             <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/white_grey_border_bottom"
-                >
+                android:layout_height="match_parent"
+                android:background="@drawable/white_grey_border_bottom">
 
                 <android.support.v7.widget.Toolbar
+                    android:id="@+id/profileToolBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/profileToolBar">
+                    android:background="@color/primary"
+                    android:theme="@style/AppTheme.Light">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -34,8 +35,9 @@
                             android:layout_centerVertical="true"
                             android:layout_marginStart="15dp"
                             android:text="BUDI"
-                            android:textColor="@color/black"
-                            android:textSize="20sp" />
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
 
                     </RelativeLayout>
 
@@ -71,8 +73,7 @@
                         android:layout_height="80dp"
                         android:layout_centerVertical="true"
                         app:civ_border_color="@color/black"
-                        app:civ_border_width="2dp"/>
-
+                        app:civ_border_width="2dp" />
 
                 </RelativeLayout>
 
@@ -88,100 +89,104 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp">
 
-
                         <TextView
                             android:id="@+id/numOfPosts"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="2dp"
                             android:text="250"
                             android:textColor="@color/black"
                             android:textSize="18sp"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginLeft="8dp"
-                            app:layout_constraintLeft_toLeftOf="parent"/>
+                            android:textStyle="bold"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:id="@+id/textPosts"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="-8dp"
                             android:text="Posts"
                             android:textSize="12sp"
-                            android:layout_marginTop="-8dp"
-                            app:layout_constraintTop_toBottomOf="@+id/numOfPosts"
-                            android:layout_marginLeft="8dp"
-                            app:layout_constraintLeft_toLeftOf="parent"/>
+                            android:textStyle="bold"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/numOfPosts" />
 
                         <TextView
                             android:id="@+id/tvFollowers"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginTop="2dp"
                             android:text="300"
                             android:textColor="@color/black"
                             android:textSize="18sp"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:layout_marginTop="2dp"
-                            app:layout_constraintRight_toLeftOf="@+id/tvFollowing"
-                            android:layout_marginRight="8dp"
+                            android:textStyle="bold"
                             app:layout_constraintLeft_toRightOf="@+id/numOfPosts"
-                            android:layout_marginLeft="8dp"
-                            />
+                            app:layout_constraintRight_toLeftOf="@+id/tvFollowing"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:id="@+id/textFollowers"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
                             android:text="Followers"
                             android:textSize="12sp"
-                            android:layout_marginTop="-8dp"
-                            app:layout_constraintTop_toBottomOf="@+id/tvFollowers"
+                            android:textStyle="bold"
+                            app:layout_constraintHorizontal_bias="0.59"
                             app:layout_constraintLeft_toRightOf="@+id/textPosts"
-                            android:layout_marginLeft="8dp"
                             app:layout_constraintRight_toLeftOf="@+id/textFollolwing"
-                            android:layout_marginRight="8dp"
-                            app:layout_constraintHorizontal_bias="0.526"/>
+                            app:layout_constraintTop_toBottomOf="@+id/tvFollowers" />
 
                         <TextView
                             android:id="@+id/tvFollowing"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginTop="2dp"
                             android:text="400"
                             android:textColor="@color/black"
                             android:textSize="18sp"
-                            android:layout_marginTop="2dp"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:layout_marginRight="8dp"
-                            app:layout_constraintRight_toRightOf="parent"/>
+                            android:textStyle="bold"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:id="@+id/textFollolwing"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="-22dp"
                             android:text="Following"
                             android:textSize="12sp"
-                            android:layout_marginTop="0dp"
-                            app:layout_constraintTop_toBottomOf="@+id/tvFollowing"
-                            android:layout_marginRight="-22dp"
-                            app:layout_constraintRight_toRightOf="parent"/>
+                            android:textStyle="bold"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tvFollowing" />
 
                         <TextView
-                            android:id="@+id/textEditProfile"
+                            android:id="@+id/editProfile"
                             android:layout_width="156dp"
-                            android:layout_height="18dp"
-                            android:text="Edit your profile"
-                            android:textColor="@color/black"
-                            android:textSize="14sp"
-                            android:layout_marginTop="8dp"
-                            app:layout_constraintTop_toBottomOf="@+id/textFollowers"
-                            android:layout_marginLeft="8dp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            android:layout_marginRight="8dp"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_height="30dp"
                             android:layout_marginBottom="8dp"
-                            app:layout_constraintVertical_bias="0.0"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@color/primary"
+                            android:gravity="center"
+                            android:text="Edit your profile"
                             android:textAlignment="center"
-                            android:background="@drawable/grey_border"/>
+                            android:textColor="@color/accent"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintHorizontal_bias="0.603"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textFollowers"
+                            app:layout_constraintVertical_bias="1.0" />
                     </android.support.constraint.ConstraintLayout>
 
                 </RelativeLayout>
@@ -224,7 +229,6 @@
                     android:textColor="@color/link_blue"
                     android:textSize="16sp" />
 
-
             </LinearLayout>
 
             <RelativeLayout
@@ -232,28 +236,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linLayout2"
-                android:layout_marginBottom="50dp">
+                android:clipToPadding="false">
 
                 <GridView
                     android:id="@+id/postsGridView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/primary"
                     android:gravity="center"
-                    android:horizontalSpacing="1dp"
+                    android:horizontalSpacing="3dp"
                     android:numColumns="3"
+                    android:paddingTop="10dp"
                     android:stretchMode="columnWidth"
                     android:verticalSpacing="1dp">
 
-
                 </GridView>
-
-
             </RelativeLayout>
-
-
         </RelativeLayout>
-
-
     </RelativeLayout>
 
 </merge>

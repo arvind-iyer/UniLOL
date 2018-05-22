@@ -16,19 +16,19 @@ class ProfilePostsAdapter(private val context: Context, var posts: ArrayList<Pos
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var imageView: ImageView
         if (convertView == null) {
-            val padding = 1
+            val padding = 3
             val length: Int = (context.resources.displayMetrics.widthPixels - 10) / 3
             imageView = ImageView(context)
             imageView.setPadding(padding, padding, padding, padding)
-            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+            imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
             imageView.layoutParams = ViewGroup.LayoutParams(length, length)
-            imageView.setOnClickListener {
-                clickListener(posts[position])
-            }
         } else {
             imageView = convertView as ImageView
         }
 
+        imageView.setOnClickListener {
+            clickListener(posts[position])
+        }
         Picasso.get().load(posts[position].url).into(imageView)
         return imageView
     }
