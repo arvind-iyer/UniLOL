@@ -5,5 +5,7 @@ data class Profile (
     var email: String = "",
     var fullName: String = "",
     var profilePictureUrl: String = "",
-    var username: String = ""
+    var username: String = "",
+    var school: String = "HKUST",
+    var status: String = "This guy is too lazy to write his status"
 )

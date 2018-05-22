@@ -4,16 +4,13 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.unilol.comp4521.unilol.interfaces.Post
 import com.unilol.comp4521.unilol.interfaces.Profile
 import com.unilol.comp4521.unilol.interfaces.ProfilePostsAdapter
-import kotlinx.android.synthetic.main.activity_detailed_meme.*
 import kotlinx.android.synthetic.main.activity_profile.*
-import org.ocpsoft.prettytime.PrettyTime
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -28,10 +25,19 @@ class ProfileActivity : AppCompatActivity() {
 
         adapter = ProfilePostsAdapter(this, ArrayList<Post>(), { post: Post -> postItemClicked(post) })
         postsGridView.adapter = adapter
-        getProfileData()
+        editProfile.setOnClickListener {
+            startActivity(Intent(this, ProfileSettingsActivity::class.java))
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+        }
     }
 
-    private fun getProfileData() {
+    override fun onResume() {
+        super.onResume()
+
+        refreshProfileData()
+    }
+
+    private fun refreshProfileData() {
         adapter.posts.clear()
         val userId: String = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         val db = FirebaseFirestore.getInstance()
@@ -44,6 +50,8 @@ class ProfileActivity : AppCompatActivity() {
 
                 profileName.text = profile.fullName
                 profileEmail.text = profile.email
+                profileSchool.text = profile.school
+                profileStatus.text = profile.status
                 numOfPosts.text = postIds.size.toString()
                 Picasso.get().load(profile.profilePictureUrl).into(profile_image)
                 postIds.forEach { postId ->

@@ -174,7 +174,7 @@
                             android:layout_marginBottom="8dp"
                             android:layout_marginLeft="8dp"
                             android:layout_marginRight="8dp"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="12dp"
                             android:background="@color/primary"
                             android:gravity="center"
                             android:text="Edit your profile"
@@ -203,7 +203,7 @@
                 android:padding="20dp">
 
                 <TextView
-                    android:id="@+id/display_name"
+                    android:id="@+id/profileSchool"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="HKUST"
@@ -212,7 +212,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/description"
+                    android:id="@+id/profileStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"

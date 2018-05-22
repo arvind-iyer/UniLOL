@@ -57,15 +57,23 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".MakeMemeActivity"></activity>
+        <activity android:name=".MakeMemeActivity" />
         <activity
             android:name=".DetailedMemeActivity"
-            android:theme="@style/AppTheme.Light"></activity>
+            android:theme="@style/AppTheme.Light" />
         <activity
             android:name=".PostMemeActivity"
             android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".ProfileActivity"
+        <activity
+            android:name=".ProfileActivity"
             android:theme="@style/AppTheme.Light" />
+        <activity
+            android:name=".ProfileSettingsActivity"
+            android:theme="@style/AppTheme.Light" />
+        <activity
+            android:name=".EditProfileDataActivity"
+            android:theme="@style/AppTheme.Light" />
+
     </application>
 
 </manifest>
