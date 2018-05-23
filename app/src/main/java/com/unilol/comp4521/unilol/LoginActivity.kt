@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity(){
 
         if (currentUser != null) {
             // Skip login page if user already exists in Firebase instance
-            Toast.makeText(this@LoginActivity, "Succesfully logged in, welcome ${currentUser.displayName} !",
+            Toast.makeText(this@LoginActivity, "Succesfully logged in, welcome ${currentUser.email} !",
                     Toast.LENGTH_LONG).show()
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
             startActivity(Intent(this, MainActivity::class.java).putExtra("user", currentUser))
@@ -103,7 +103,7 @@ class LoginActivity : AppCompatActivity(){
                     .addOnCompleteListener ( this, {task ->
                 if (task.isSuccessful) {
                     val user = mAuth.currentUser
-                    Toast.makeText(this, "Succesfully logged in, welcome ${user!!.displayName} !", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Succesfully logged in, welcome ${user!!.email} !", Toast.LENGTH_LONG).show()
                     startActivity(Intent(this, MainActivity::class.java).putExtra("user", user))
                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                 } else {
@@ -142,7 +142,7 @@ class LoginActivity : AppCompatActivity(){
                             firestore.collection("users").document(currentUser.uid).set(newUser)
                         }
 
-                        Toast.makeText(this@LoginActivity, "Succesfully logged in, welcome ${displayName} !",
+                        Toast.makeText(this@LoginActivity, "Succesfully logged in, welcome ${currentUser.email} !",
                                 Toast.LENGTH_LONG).show()
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java).putExtra("user", currentUser))
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
