@@ -142,7 +142,7 @@
                             android:textStyle="bold"
                             app:layout_constraintHorizontal_bias="0.59"
                             app:layout_constraintLeft_toRightOf="@+id/textPosts"
-                            app:layout_constraintRight_toLeftOf="@+id/textFollolwing"
+                            app:layout_constraintRight_toLeftOf="@+id/textFollowing"
                             app:layout_constraintTop_toBottomOf="@+id/numOfFollowers" />
 
                         <TextView
@@ -160,7 +160,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/textFollolwing"
+                            android:id="@+id/textFollowing"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="-22dp"

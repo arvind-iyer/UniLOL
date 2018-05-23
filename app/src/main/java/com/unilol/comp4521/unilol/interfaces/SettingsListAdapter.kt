@@ -24,7 +24,6 @@ class SettingsListAdapter
         var view: View
         var viewHolder: ViewHolder
 
-        var settingsName = getItem(position)!!
         if (convertView == null) {
             view = LayoutInflater.from(mContext).inflate(mResource, parent, false)
             viewHolder = ViewHolder(view)

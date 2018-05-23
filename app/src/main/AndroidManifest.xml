@@ -73,7 +73,9 @@
         <activity
             android:name=".EditProfileDataActivity"
             android:theme="@style/AppTheme.Light" />
-
+        <activity
+            android:name=".ProfileRelationActivity"
+            android:theme="@style/AppTheme.Light" />
     </application>
 
 </manifest>

@@ -15,13 +15,13 @@ import com.unilol.comp4521.unilol.R.color.*
 import com.unilol.comp4521.unilol.interfaces.Post
 import com.unilol.comp4521.unilol.interfaces.User
 import com.unilol.comp4521.unilol.interfaces.ProfilePostsAdapter
+import com.unilol.comp4521.unilol.interfaces.RelationListAdapter
 import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : AppCompatActivity() {
 
     private val tag = "ProfileActivity"
 
-    private val mDB = FirebaseFirestore.getInstance()
     private lateinit var adapter: ProfilePostsAdapter
 
     private lateinit var selfUserId: String
@@ -30,6 +30,38 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+
+        textFollowing.setOnClickListener {
+            val intent = Intent(this, ProfileRelationActivity::class.java)
+            intent.putExtra("@string/mode", ProfileRelationActivity.RELATION_FOLLOWING)
+            intent.putExtra("@string/userId", followUserId)
+            startActivity(intent)
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+        }
+
+        numOfFollowing.setOnClickListener {
+            val intent = Intent(this, ProfileRelationActivity::class.java)
+            intent.putExtra("@string/mode", ProfileRelationActivity.RELATION_FOLLOWING)
+            intent.putExtra("@string/userId", followUserId)
+            startActivity(intent)
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+        }
+
+        textFollowers.setOnClickListener {
+            val intent = Intent(this, ProfileRelationActivity::class.java)
+            intent.putExtra("@string/mode", ProfileRelationActivity.RELATION_FOLLOWERS)
+            intent.putExtra("@string/userId", followUserId)
+            startActivity(intent)
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+        }
+
+        numOfFollowers.setOnClickListener {
+            val intent = Intent(this, ProfileRelationActivity::class.java)
+            intent.putExtra("@string/mode", ProfileRelationActivity.RELATION_FOLLOWERS)
+            intent.putExtra("@string/userId", followUserId)
+            startActivity(intent)
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+        }
 
         val incomingIntent = intent
         followUserId = try {
@@ -154,8 +186,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun postItemClicked(post : Post) {
-        val requestUsername = mDB.collection("users").document(post.user_id)
-        requestUsername.get().addOnCompleteListener({task ->
+        val db = FirebaseFirestore.getInstance()
+        val requestUsername = db.collection("users").document(post.user_id)
+        requestUsername.get().addOnCompleteListener({ task ->
             if(task.isSuccessful) {
                 val userObj = task.result.data
                 val intent = Intent(this, DetailedMemeActivity::class.java)
