@@ -103,10 +103,12 @@ class LoginActivity : AppCompatActivity(){
                     .addOnCompleteListener ( this, {task ->
                 if (task.isSuccessful) {
                     val user = mAuth.currentUser
+                    login_message.setText("Login success!")
                     Toast.makeText(this, "Succesfully logged in, welcome ${user!!.email} !", Toast.LENGTH_LONG).show()
                     startActivity(Intent(this, MainActivity::class.java).putExtra("user", user))
                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                 } else {
+                    login_message.setText("Login failed!")
                     val e = task.exception as FirebaseAuthException
                     Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
                 }
@@ -144,11 +146,13 @@ class LoginActivity : AppCompatActivity(){
 
                         Toast.makeText(this@LoginActivity, "Succesfully logged in, welcome ${currentUser.email} !",
                                 Toast.LENGTH_LONG).show()
+                        login_message.setText("Login success!")
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java).putExtra("user", currentUser))
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "Sign in with Facebook failure", task.getException())
+                        login_message.setText("Login failed!")
                         Toast.makeText(this@LoginActivity, "Authentication failed",
                                 Toast.LENGTH_SHORT).show()
                     }
