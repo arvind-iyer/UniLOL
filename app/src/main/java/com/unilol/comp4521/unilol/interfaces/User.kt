@@ -19,6 +19,7 @@ data class User (
         val votes: Votes = Votes(),
         var school: String = "HKUST",
         var status: String = "This guy is too lazy to write his status",
-        val following: ArrayList<String> = ArrayList()
+        val following: ArrayList<String> = ArrayList(),
+        val followers: ArrayList<String> = ArrayList()
 )
 
