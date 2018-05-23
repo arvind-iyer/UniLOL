@@ -34,24 +34,10 @@ class ProfileSettingsActivity : AppCompatActivity() {
         actionbar?.apply {
             setDisplayHomeAsUpEnabled(true)
         }
-        actionbar!!.title = "Settings"
+        actionbar?.title = "Settings"
 
         adapter = SettingsListAdapter(this, R.layout.settings_listitem, settingNames, { section: Int -> sectionClicked(section) })
         settingsListView.adapter = adapter
-
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // When user presses back button, go back to previous MainActivity
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
     }
 
     private fun sectionClicked(section : Int) {
@@ -60,13 +46,27 @@ class ProfileSettingsActivity : AppCompatActivity() {
             mAuth.signOut()
             "Signed out".toast(this, 2)
             startActivity(Intent(this, LoginActivity::class.java))
-            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
             finish()
+            overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out)
         } else {
             val intent = Intent(this, EditProfileDataActivity::class.java)
             intent.putExtra("mode", section)
             startActivity(intent)
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // When user presses back button, go back to previous MainActivity
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 }

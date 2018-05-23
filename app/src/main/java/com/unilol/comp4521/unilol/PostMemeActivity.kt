@@ -94,6 +94,7 @@ class PostMemeActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 addPostToUser(it.id)
                 startActivity(Intent(this, MainActivity::class.java))
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out)
             }.addOnFailureListener {
                 Toast.makeText(this, "Post meme failed. $it.message",
                         Toast.LENGTH_SHORT).show()

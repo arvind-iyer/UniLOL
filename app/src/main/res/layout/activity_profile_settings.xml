@@ -4,19 +4,12 @@
     android:background="@color/white"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar2"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/primary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
-
     <ListView
         android:id="@+id/settingsListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar2"
+        android:layout_marginTop="56dp"
         android:scrollbars="vertical" />
 
     <!--For back button on the action bar-->

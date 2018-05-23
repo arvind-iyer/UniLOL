@@ -25,11 +25,6 @@ class ProfileRelationActivity : AppCompatActivity() {
 
         mode = intent.extras?.getInt("@string/mode") ?: -1
         adapter = RelationListAdapter(this, R.layout.viewusers_listitem, ArrayList(), { section: Int -> sectionClicked(section) })
-        settingsListView.adapter = adapter
-
-        val userId = intent.extras?.getString("@string/userId") ?: ""
-        val db = FirebaseFirestore.getInstance()
-        val selfProfile = db.collection("users").document(userId)
 
         // Toolbar and actionbar stuff --> places an actionbar with a back button
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -38,14 +33,14 @@ class ProfileRelationActivity : AppCompatActivity() {
         actionbar?.apply {
             setDisplayHomeAsUpEnabled(true)
         }
-        when (mode) {
-            RELATION_FOLLOWING -> {
-                actionbar!!.title = "Following"
-            }
-            RELATION_FOLLOWERS -> {
-                actionbar!!.title = "Followers"
-            }
-        }
+
+        settingsListView.adapter = adapter
+        actionbar?.title = if (mode == RELATION_FOLLOWERS) "Following" else "Followers"
+
+        val userId = intent.extras?.getString("@string/userId") ?: ""
+        val db = FirebaseFirestore.getInstance()
+        val selfProfile = db.collection("users").document(userId)
+
         selfProfile.get().addOnCompleteListener() { task ->
             if (task.isSuccessful) {
                 val self = task.result.toObject(User::class.java)!!
@@ -56,25 +51,26 @@ class ProfileRelationActivity : AppCompatActivity() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // When user presses back button, go back to previous MainActivity
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
-    }
-
     private fun sectionClicked(section : Int) {
         val userId = users[section]
         val intent = Intent(this, ProfileActivity::class.java)
         intent.putExtra("@string/user_id", userId)
         startActivity(intent)
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // When user presses back button, go back to previous MainActivity
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
     }
 
     companion object {
