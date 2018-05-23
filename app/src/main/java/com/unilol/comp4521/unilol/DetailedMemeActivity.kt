@@ -16,6 +16,7 @@ import android.widget.*
 import com.ceylonlabs.imageviewpopup.ImagePopup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import java.util.*
 import com.unilol.comp4521.unilol.interfaces.Comment
 import com.unilol.comp4521.unilol.interfaces.CommentsListAdapter
@@ -117,45 +118,25 @@ class DetailedMemeActivity: AppCompatActivity() {
         // Retrieve all comments from the selected post
         val db = FirebaseFirestore.getInstance()
         comments = ArrayList<Comment>()
-        val requestComments = db.collection("posts").document(postId!!).collection("comments")
+        val requestComments = db.collection("posts").document(postId!!)
+                .collection("comments")
+                .orderBy("upvotes", Query.Direction.DESCENDING)
         requestComments.get().addOnCompleteListener({ task ->
                     if( task.isSuccessful ) {
                         mListView = findViewById(R.id.comments_list_view) as ListView
-                        task.result.forEach{
-                            commentSnapshot ->
+                        task.result.forEach{commentSnapshot ->
                             val comment = commentSnapshot.toObject(Comment::class.java)
-                            val requestUsername = db.collection("users").document(comment.user_id.toString())
-                            requestUsername.get().addOnCompleteListener({taskInner ->
-                                if(taskInner.isSuccessful) {
-                                    val userObj = taskInner.result.toObject(User::class.java)
-                                    comments!!.add(Comment(
+                            comments!!.add(Comment(
                                             commentSnapshot.id,
                                             comment.message,
-                                            userObj!!.id,
+                                            comment.user_id,
                                             comment.upvotes,
                                             comment.time
-                                    ))
-                                    val sortedComments = ArrayList<Comment>(comments!!.sortedWith(object: Comparator<Comment>{
-                                        override fun compare(p1: Comment, p2: Comment): Int = when {
-                                            p1.upvotes < p2.upvotes -> 1
-                                            p1.upvotes == p2.upvotes -> 0
-                                            else -> -1
-                                        }
-                                    }))
-
-                                    val adapter = CommentsListAdapter(this@DetailedMemeActivity,
-                                            R.layout.comment_layout, sortedComments, postId!!)
-
-                                    mListView!!.setAdapter(adapter)
-                                }
-
-                                else{
-                                    Log.d(TAG, "Error while collecting username! ${task.exception}")
-                                }
-                            })
-
+                                            ))
                         }
-
+                        val adapter = CommentsListAdapter(this@DetailedMemeActivity,
+                                            R.layout.comment_layout, comments!!, postId!!)
+                        mListView!!.setAdapter(adapter)
                         mProgressBar!!.setVisibility(View.GONE)
                     }
                     else{

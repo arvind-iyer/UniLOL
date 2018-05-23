@@ -3,6 +3,9 @@ package com.unilol.comp4521.unilol
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.ActionBar
+import android.support.v7.widget.Toolbar
+import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.unilol.comp4521.unilol.interfaces.RelationListAdapter
@@ -27,12 +30,20 @@ class ProfileRelationActivity : AppCompatActivity() {
         val userId = intent.extras?.getString("@string/userId") ?: ""
         val db = FirebaseFirestore.getInstance()
         val selfProfile = db.collection("users").document(userId)
+
+        // Toolbar and actionbar stuff --> places an actionbar with a back button
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        val actionbar: ActionBar? = supportActionBar
+        actionbar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+        }
         when (mode) {
             RELATION_FOLLOWING -> {
-                topbarTextView.text = "Following"
+                actionbar!!.title = "Following"
             }
             RELATION_FOLLOWERS -> {
-                topbarTextView.text = "Followers"
+                actionbar!!.title = "Followers"
             }
         }
         selfProfile.get().addOnCompleteListener() { task ->
@@ -41,6 +52,19 @@ class ProfileRelationActivity : AppCompatActivity() {
                 users = if (mode == RELATION_FOLLOWERS) self.followers else self.following
                 adapter = RelationListAdapter(this, R.layout.viewusers_listitem, users, { section: Int -> sectionClicked(section) })
                 settingsListView.adapter = adapter
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // When user presses back button, go back to previous MainActivity
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
             }
         }
     }
