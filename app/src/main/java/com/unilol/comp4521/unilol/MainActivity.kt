@@ -3,9 +3,8 @@ package com.unilol.comp4521.unilol
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -16,8 +15,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import android.widget.ProgressBar
+import android.widget.SearchView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -27,9 +28,6 @@ import com.unilol.comp4521.unilol.interfaces.Comment
 import com.unilol.comp4521.unilol.interfaces.Post
 import com.unilol.comp4521.unilol.interfaces.PostAdapter
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
-import java.io.IOException
-import java.lang.Exception
 import java.util.*
 
 fun Any.toast(context: Context, duration: Int = Toast.LENGTH_SHORT) : Toast {
@@ -103,13 +101,67 @@ class MainActivity : AppCompatActivity() {
 
         // Load all the memes upon Activity creation
         loadPosts()
-
         post_new_meme.setOnClickListener({
             val intent = Intent(this, MakeMemeActivity::class.java)
             startActivityForResult(intent, Activity.RESULT_CANCELED)
         })
+
+
     }
 
+    fun searchPost(post: Post, query: String) : Boolean {
+        return (post.title.toLowerCase().contains(query.toLowerCase())
+                || post.description.toLowerCase().contains(query.toLowerCase())
+                || post.tags.contains(query.toLowerCase()))
+    }
+
+    fun performSearch(query : String) {
+        posts.clear()
+        progress_loader.visibility = ProgressBar.VISIBLE
+        Log.d("Query", "q: ${query}")
+        mDB.collection("posts").orderBy("upvotes", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener({ task ->
+                    if (task.isSuccessful) {
+                        task.result.forEach { p ->
+                            val post = p.toObject(Post::class.java)
+                            if(searchPost(post, query))
+                                posts.add(post)
+                                println("Matched ${post.id}")
+                            }
+                        }
+                        viewAdapter.notifyDataSetChanged()
+                        progress_loader.visibility = ProgressBar.INVISIBLE
+
+                })
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        val mSearch = menu?.findItem(R.id.search_bar) as MenuItem
+        val mSearchView = mSearch.actionView as SearchView
+
+        mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextSubmit(query: String) : Boolean{
+                performSearch(query)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String) : Boolean{
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    posts.removeIf { post -> !searchPost(post, newText) }
+                    viewAdapter.notifyDataSetChanged()
+                }
+                return true
+            }
+        })
+
+
+
+        return super.onCreateOptionsMenu(menu)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -124,6 +176,7 @@ class MainActivity : AppCompatActivity() {
 
     fun loadPosts() {
         posts.clear()
+        progress_loader.visibility = ProgressBar.VISIBLE
         mDB.collection("posts").orderBy("upvotes", Query.Direction.DESCENDING)
             .get()
             .addOnCompleteListener({ task ->
@@ -158,65 +211,10 @@ class MainActivity : AppCompatActivity() {
                             viewAdapter.notifyDataSetChanged()
                         })
                     }
-
+                    progress_loader.visibility = ProgressBar.INVISIBLE
 
                 }
             })
-    }
-    fun uploadMeme(view: View) {
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        "Select a picture to upload".toast(view.context)
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
-            && data != null && data.data != null ) {
-            val uri = data.data
-            try {
-                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                image_holder.setImageBitmap(bitmap)
-                val memeRef = mStorage.child("images")
-                val memeUUID = UUID.randomUUID().toString() + ".jpg"
-                btn_upload.isClickable = true
-                btn_upload.setOnClickListener {
-                    memeRef.child(memeUUID)
-                            .putFile(uri)
-                            .addOnSuccessListener { taskSnapshot ->
-//                                val downloadUrl = taskSnapshot.downloadUrl
-                                //TODO: Add database entry with this link
-
-                            }
-                            .addOnFailureListener { exception: Exception ->
-                                exception.printStackTrace()
-                            }
-                }
-
-            } catch (e : IOException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-
-    fun downloadMeme(view: View) {
-
-        val memeRef = mStorage.child("images")
-        val localFile = File.createTempFile("images", "jpg")
-        memeRef.getFile(localFile)
-                .addOnSuccessListener({
-                    // Successfully downloaded data to local file
-                    // ...
-                    val mbp = BitmapFactory.decodeFile(localFile.absolutePath)
-                    image_holder.setImageBitmap(mbp)
-                }).addOnFailureListener({
-            // Handle failed download
-            // ...
-        })
     }
 
     private fun postItemClicked(post : Post) {
