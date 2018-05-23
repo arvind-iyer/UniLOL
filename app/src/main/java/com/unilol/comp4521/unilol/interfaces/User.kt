@@ -15,7 +15,10 @@ data class User (
         var profilePictureUrl: String = "",
         var email: String = "",
         var fullName: String = "",
-        val posts: ArrayList<String> = ArrayList<String>(),
-        val votes: Votes = Votes()
+        val posts: ArrayList<String> = ArrayList(),
+        val votes: Votes = Votes(),
+        var school: String = "HKUST",
+        var status: String = "This guy is too lazy to write his status",
+        val following: ArrayList<String> = ArrayList()
 )
 

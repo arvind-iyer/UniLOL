@@ -72,7 +72,9 @@ class MainActivity : AppCompatActivity() {
 
             when(menuItem.itemId){
                 R.id.my_profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    intent.putExtra("@string/user_id", mAuth.currentUser?.uid ?: "")
+                    startActivity(intent)
                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
                 }
                 R.id.logout-> {
