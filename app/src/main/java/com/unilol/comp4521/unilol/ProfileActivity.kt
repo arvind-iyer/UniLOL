@@ -1,6 +1,5 @@
 package com.unilol.comp4521.unilol
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -25,21 +24,21 @@ class ProfileActivity : AppCompatActivity() {
     private val mDB = FirebaseFirestore.getInstance()
     private lateinit var adapter: ProfilePostsAdapter
 
-    private lateinit var userId: String
-    private lateinit var currentUserId: String
+    private lateinit var selfUserId: String
+    private lateinit var followUserId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
         val incomingIntent = intent
-        userId = try {
+        followUserId = try {
             incomingIntent.getStringExtra("@string/user_id")
         }
         catch(e: IllegalStateException){
             ""
         }
-        currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        selfUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
         adapter = ProfilePostsAdapter(this, ArrayList<Post>(), { post: Post -> postItemClicked(post) })
         postsGridView.adapter = adapter
@@ -77,8 +76,8 @@ class ProfileActivity : AppCompatActivity() {
 
         val db = FirebaseFirestore.getInstance()
 
-        val requestProfile = db.collection("users").document(userId)
-        val selfProfile = db.collection("users").document(currentUserId)
+        val requestProfile = db.collection("users").document(followUserId)
+        val selfProfile = db.collection("users").document(selfUserId)
         requestProfile.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val user = task.result.toObject(User::class.java)!!
@@ -88,6 +87,8 @@ class ProfileActivity : AppCompatActivity() {
                 profileSchool.text = user.school
                 profileStatus.text = user.status
                 numOfPosts.text = user.posts.size.toString()
+                numOfFollowers.text = user.followers.size.toString()
+                numOfFollowing.text = user.following.size.toString()
                 Picasso.get().load(user.profilePictureUrl).into(profile_image)
                 user.posts.forEach { postId ->
                     val requestPost = db.collection("posts").document(postId)
@@ -102,7 +103,7 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
-        if (userId == currentUserId) {
+        if (selfUserId == followUserId) {
             // viewing self profile
             updateButtonStyle(RELATION_EDIT_PROFILE, {
                 startActivity(Intent(this, ProfileSettingsActivity::class.java))
@@ -113,16 +114,17 @@ class ProfileActivity : AppCompatActivity() {
             selfProfile.get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val user = task.result.toObject(User::class.java)!!
-                    if (user.following.contains(userId)) {
+                    if (user.following.contains(followUserId)) {
                         // following
-                        updateButtonStyle(RELATION_FOLLOWING, {
-                            unfollowUser(user.following)
-                        })
+                        if (user.followers.contains(followUserId)) {
+                            // friends
+                            updateButtonStyle(RELATION_FRIENDS, { unfollowUser() })
+                        } else {
+                            updateButtonStyle(RELATION_FOLLOWING, { unfollowUser() })
+                        }
                     } else {
                         // not following
-                        updateButtonStyle(RELATION_FOLLOW, {
-                            followUser(user.following)
-                        })
+                        updateButtonStyle(RELATION_FOLLOW, { followUser() })
                     }
                 }
             }
@@ -173,43 +175,87 @@ class ProfileActivity : AppCompatActivity() {
         })
     }
 
-    private fun followUser(currentFollowing: ArrayList<String>) {
-        if (userId == currentUserId) {
-            return
-        }
+    private fun followUser() {
+        if (selfUserId == followUserId) { return }
         val db = FirebaseFirestore.getInstance()
-        val ref = db.collection("users").document(currentUserId)
-        currentFollowing.add(userId)
-        currentFollowing.distinct()
-        ref.update("following", currentFollowing).addOnCompleteListener { task ->
+        val currentRef = db.collection("users").document(selfUserId)
+        val followerRef = db.collection("users").document(followUserId)
+        // Add to self's followings
+        currentRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Toast.makeText(this, "Followed User Successfully",
-                        Toast.LENGTH_SHORT).show()
-                updateButtonStyle(RELATION_FOLLOWING, { unfollowUser(currentFollowing) })
-            } else {
-                Toast.makeText(this, "Followed User Failed",
-                        Toast.LENGTH_SHORT).show()
-                updateButtonStyle(RELATION_FOLLOW, { followUser(currentFollowing) })
+                val self = task.result.toObject(User::class.java)!!
+                val selfCurrentFollowing = self.following
+                selfCurrentFollowing.add(followUserId)
+                val followerNewFollower = ArrayList(selfCurrentFollowing.distinct())
+                currentRef.update("following", followerNewFollower).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(this, "Followed User Successfully",
+                                Toast.LENGTH_SHORT).show()
+                        if (self.followers.contains(followUserId)) {
+                            updateButtonStyle(RELATION_FRIENDS, { unfollowUser() })
+                        } else {
+                            updateButtonStyle(RELATION_FOLLOWING, { unfollowUser() })
+                        }
+                    } else {
+                        Toast.makeText(this, "Followed User Failed",
+                                Toast.LENGTH_SHORT).show()
+                        updateButtonStyle(RELATION_FOLLOW, { followUser() })
+                    }
+                }
+            }
+        }
+
+        // Add to follower's followers
+        followerRef.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val follower = task.result.toObject(User::class.java)!!
+                val followerCurrentFollowers = follower.followers
+                followerCurrentFollowers.add(selfUserId)
+                val followerNewFollower = ArrayList(followerCurrentFollowers.distinct())
+                followerRef.update("followers", followerNewFollower).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        numOfFollowers.text = followerNewFollower.size.toString()
+                    }
+                }
             }
         }
     }
 
-    private fun unfollowUser(currentFollowing: ArrayList<String>) {
-        if (userId == FirebaseAuth.getInstance().currentUser?.uid) {
-            return
-        }
+    private fun unfollowUser() {
+        if (selfUserId == followUserId) { return }
         val db = FirebaseFirestore.getInstance()
-        val ref = db.collection("users").document(userId)
-        currentFollowing.remove(userId)
-        ref.update("following", currentFollowing).addOnCompleteListener { task ->
+        val currentRef = db.collection("users").document(selfUserId)
+        val followerRef = db.collection("users").document(followUserId)
+        currentRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Toast.makeText(this, "Unfollowed User Successfully",
-                        Toast.LENGTH_SHORT).show()
-                updateButtonStyle(RELATION_FOLLOW, { followUser(currentFollowing) })
-            } else {
-                Toast.makeText(this, "Unfollowed User Failed",
-                        Toast.LENGTH_SHORT).show()
-                updateButtonStyle(RELATION_FOLLOWING, { unfollowUser(currentFollowing) })
+                val self = task.result.toObject(User::class.java)!!
+                val selfCurrentFollowing = self.followers
+                selfCurrentFollowing.remove(followUserId)
+                currentRef.update("following", selfCurrentFollowing).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(this, "Unfollowed User Successfully",
+                                Toast.LENGTH_SHORT).show()
+                        updateButtonStyle(RELATION_FOLLOW, { followUser() })
+                    } else {
+                        Toast.makeText(this, "Unfollowed User Failed",
+                                Toast.LENGTH_SHORT).show()
+                        updateButtonStyle(RELATION_FOLLOWING, { unfollowUser() })
+                    }
+                }
+            }
+        }
+
+        // Remove from follower's followers
+        followerRef.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val follower = task.result.toObject(User::class.java)!!
+                val followerCurrentFollowers = follower.followers
+                followerCurrentFollowers.remove(selfUserId)
+                followerRef.update("followers", followerCurrentFollowers).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        numOfFollowers.text = follower.followers.size.toString()
+                    }
+                }
             }
         }
     }
