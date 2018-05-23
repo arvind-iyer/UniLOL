@@ -87,6 +87,7 @@ class ProfileActivity : AppCompatActivity() {
         return when (item.itemId) {
             android.R.id.home -> {
                 finish()
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out)
                 true
             }
             else -> {
@@ -201,6 +202,7 @@ class ProfileActivity : AppCompatActivity() {
                 intent.putExtra("@string/post_description", post.description)
                 intent.putExtra("@string/post_user_id", userObj!!.getValue("username").toString())
                 startActivity(intent)
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
             }
             else{
                 Log.d(tag, "Error while collecting username! ${task.exception}")

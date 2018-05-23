@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                     mAuth.signOut()
                     "Signed out".toast(this, 2)
                     startActivity(Intent(this, LoginActivity::class.java))
-                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out)
                 }
             }
 
