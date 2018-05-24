@@ -1,3 +1,8 @@
+/*
+# COMP 4521 # IYER ARVIND   20218689    aiyer@connect.ust.hk
+# COMP 4521 # RYAN BUDI     20214841    bryanaa@connect.ust.hk
+# COMP 4521 # JI TONY WAI SUM 20217881  twsji@connect.ust.hk
+*/
 package com.unilol.comp4521.unilol
 
 import android.widget.Toast
@@ -77,7 +82,8 @@ class MakeMemeActivity : Activity(), PermissionRequest.Response {
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == CAMERA_PREVIEW_RESULT && data != null) {
             val sourcePath = data.getStringExtra(ImgLyIntent.SOURCE_IMAGE_PATH)
             imagePath = null
-//            Toast.makeText(PESDK.getAppContext(), "Editor canceled, sourceType image is:\n$sourcePath", Toast.LENGTH_LONG).show()
+//            Toast.makeText(PESDK.getAppContext(), "Editor canceled, sourceType image is:
+$sourcePath", Toast.LENGTH_LONG).show()
         } else if (resultCode == Activity.RESULT_OK && requestCode == POST_RESULT) {
         } else {
             imagePath = null
@@ -110,4 +116,3 @@ class MakeMemeActivity : Activity(), PermissionRequest.Response {
         var POST_RESULT = 2
     }
 }
-
