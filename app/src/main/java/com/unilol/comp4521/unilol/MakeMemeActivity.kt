@@ -83,7 +83,7 @@ class MakeMemeActivity : Activity(), PermissionRequest.Response {
             val sourcePath = data.getStringExtra(ImgLyIntent.SOURCE_IMAGE_PATH)
             imagePath = null
 //            Toast.makeText(PESDK.getAppContext(), "Editor canceled, sourceType image is:
-$sourcePath", Toast.LENGTH_LONG).show()
+//$sourcePath", Toast.LENGTH_LONG).show()
         } else if (resultCode == Activity.RESULT_OK && requestCode == POST_RESULT) {
         } else {
             imagePath = null
