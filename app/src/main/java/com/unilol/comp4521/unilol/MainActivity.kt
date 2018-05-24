@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity() {
                 .get()
                 .addOnCompleteListener({ task ->
                     if (task.isSuccessful) {
-                        task.result.forEach { p ->
+                        for(p in task.result){
                             val post = p.toObject(Post::class.java)
                             if(searchPost(post, query))
                                 posts.add(post)
@@ -184,14 +184,13 @@ class MainActivity : AppCompatActivity() {
             .get()
             .addOnCompleteListener({ task ->
                 if( task.isSuccessful ) {
-                    task.result.forEach { q ->
+                    for(q in task.result){
                         println("Title: ${q.get("title")}")
                         val post = q.toObject(Post::class.java)
                         post.id = q.id
                         posts.add(post)
 
                     }
-
 
                     viewManager = LinearLayoutManager(this)
                     viewAdapter = PostAdapter(posts, { post: Post -> postItemClicked(post) })
@@ -201,13 +200,13 @@ class MainActivity : AppCompatActivity() {
                         adapter = viewAdapter
                     }
                     //Get comments
-                    posts.forEach { post ->
+                    for(post in posts){
                         mDB.collection("posts").document(post.id)
                                 .collection("comments").get()
                         .addOnCompleteListener({ subtask ->
                             if (subtask.isSuccessful) {
                                 post.comments = ArrayList<Comment>()
-                                subtask.result.forEach {comment ->
+                                for(comment in subtask.result){
                                     post.comments?.add(comment.toObject(Comment::class.java))
                                 }
                             }
