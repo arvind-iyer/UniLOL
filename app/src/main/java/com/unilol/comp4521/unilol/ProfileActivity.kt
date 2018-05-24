@@ -123,8 +123,8 @@ class ProfileActivity : AppCompatActivity() {
                 numOfFollowers.text = user.followers.size.toString()
                 numOfFollowing.text = user.following.size.toString()
                 Picasso.get().load(user.profilePictureUrl).into(profile_image)
-                user.posts.forEach { postId ->
-                    val requestPost = db.collection("posts").document(postId)
+                for(post in user.posts){
+                    val requestPost = db.collection("posts").document(post)
                     requestPost.get().addOnCompleteListener { task2 ->
                         if (task2.isSuccessful) {
                             val post = task2.result.toObject(Post::class.java)!!

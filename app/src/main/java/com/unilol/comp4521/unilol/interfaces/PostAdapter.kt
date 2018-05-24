@@ -107,7 +107,7 @@ class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) 
                     .whereEqualTo("id", currentUser.uid).get()
             userRef.addOnCompleteListener {
                 if(it.isSuccessful) {
-                    it.result.take(1).forEach { u : QueryDocumentSnapshot ->
+                    for (u in it.result.take(1)){
                         user = u.toObject(User::class.java)
                         user.id = u.id
                         Log.d("user/", u.id)

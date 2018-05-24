@@ -124,7 +124,7 @@ class DetailedMemeActivity: AppCompatActivity() {
         requestComments.get().addOnCompleteListener({ task ->
                     if( task.isSuccessful ) {
                         mListView = findViewById(R.id.comments_list_view) as ListView
-                        task.result.forEach{commentSnapshot ->
+                        for(commentSnapshot in task.result){
                             val comment = commentSnapshot.toObject(Comment::class.java)
                             comments!!.add(Comment(
                                             commentSnapshot.id,
@@ -175,6 +175,8 @@ class DetailedMemeActivity: AppCompatActivity() {
             db.collection("posts").document(postId!!).collection("comments")
                     .add(newComment)
                     .addOnSuccessListener {
+                        val commentId = it.id
+                        db.collection("posts").document(postId!!).collection("comments").document(commentId).update("id", commentId)
                         Toast.makeText(applicationContext, "Post comment success!", Toast.LENGTH_SHORT).show()
                         displayComments()
                         dialog.dismiss()

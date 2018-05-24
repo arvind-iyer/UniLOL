@@ -109,9 +109,8 @@ class CommentsListAdapter
             requestUser.get().addOnCompleteListener({task ->
                 if(task.isSuccessful) {
                     val user = task.result.toObject(User::class.java)
-                    user!!.votes.comments.forEach {
-                        key, value ->
-                        if (key == id)
+                    for(comment in user!!.votes.comments){
+                        if (comment.key == id)
                             holder.commentLikeButton!!.isLiked = true
                     }
                 }
