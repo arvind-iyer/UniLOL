@@ -29,6 +29,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.unilol.comp4521.unilol.interfaces.Comment
 import com.unilol.comp4521.unilol.interfaces.Post
 import com.unilol.comp4521.unilol.interfaces.PostAdapter
+import com.unilol.comp4521.unilol.interfaces.searchPost
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -112,11 +113,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun searchPost(post: Post, query: String) : Boolean {
-        return (post.title.toLowerCase().contains(query.toLowerCase())
-                || post.description.toLowerCase().contains(query.toLowerCase())
-                || post.tags.contains(query.toLowerCase()))
-    }
 
     fun performSearch(query : String) {
         posts.clear()

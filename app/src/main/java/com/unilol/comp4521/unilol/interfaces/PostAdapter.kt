@@ -33,6 +33,12 @@ data class Post(
         var comments: ArrayList<Comment>? = null
 )
 
+fun searchPost(post: Post, query: String) : Boolean {
+    return (post.title.toLowerCase().contains(query.toLowerCase())
+            || post.description.toLowerCase().contains(query.toLowerCase())
+            || post.tags.contains(query.toLowerCase()))
+}
+
 class PostAdapter(private val posts: ArrayList<Post>, val clickListener: (Post) -> Unit):
         RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
