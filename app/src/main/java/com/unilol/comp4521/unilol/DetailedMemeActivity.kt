@@ -175,6 +175,8 @@ class DetailedMemeActivity: AppCompatActivity() {
             db.collection("posts").document(postId!!).collection("comments")
                     .add(newComment)
                     .addOnSuccessListener {
+                        val commentId = it.id
+                        db.collection("posts").document(postId!!).collection("comments").document(commentId).update("id", commentId)
                         Toast.makeText(applicationContext, "Post comment success!", Toast.LENGTH_SHORT).show()
                         displayComments()
                         dialog.dismiss()

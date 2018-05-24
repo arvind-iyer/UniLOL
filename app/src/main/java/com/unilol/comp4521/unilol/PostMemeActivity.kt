@@ -92,9 +92,11 @@ class PostMemeActivity : AppCompatActivity() {
 
         db.collection("posts").add(newPost)
             .addOnSuccessListener {
-                addPostToUser(it.id)
+                val postId = it.id
+                addPostToUser(postId)
                 startActivity(Intent(this, MainActivity::class.java))
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out)
+                db.collection("posts").document(postId).update("id", postId)
             }.addOnFailureListener {
                 Toast.makeText(this, "Post meme failed. $it.message",
                         Toast.LENGTH_SHORT).show()
