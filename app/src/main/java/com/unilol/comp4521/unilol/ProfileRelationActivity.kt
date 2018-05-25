@@ -40,7 +40,7 @@ class ProfileRelationActivity : AppCompatActivity() {
         }
 
         settingsListView.adapter = adapter
-        actionbar?.title = if (mode == RELATION_FOLLOWERS) "Following" else "Followers"
+        actionbar?.title = if (mode == RELATION_FOLLOWERS) "Followers" else "Following"
 
         val userId = intent.extras?.getString("@string/userId") ?: ""
         val db = FirebaseFirestore.getInstance()
